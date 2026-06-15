@@ -99,28 +99,21 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // smooth momentum scroll — pointer devices only (mobile keeps crisp native scroll)
-    let lenis = null;
-    if (typeof Lenis !== 'undefined' && !window.matchMedia('(hover:none)').matches) {
-      lenis = new Lenis({ duration: 1.15, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
-      lenis.on('scroll', ScrollTrigger.update);
-      gsap.ticker.add(t => lenis.raf(t * 1000));
-      gsap.ticker.lagSmoothing(0);
-    }
-    // in-page anchors → smooth scroll
+    // native scroll = immediate + smooth on modern devices (no smooth-scroll library lag).
+    // in-page anchors scroll smoothly.
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const sel = a.getAttribute('href'); if (sel.length < 2) return;
         const t = document.querySelector(sel); if (!t) return;
         e.preventDefault();
-        lenis ? lenis.scrollTo(t, { duration: 1.2 }) : t.scrollIntoView({ behavior: 'smooth' });
+        t.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
 
-    // hero parallax — content drifts & fades on scroll (depth between sections)
+    // subtle hero parallax — bound directly to scroll position (responsive, no lag)
     gsap.to('.hero-inner', {
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-      yPercent: -16, opacity: .2, ease: 'none',
+      yPercent: -8, opacity: .5, ease: 'none',
     });
 
     // section headings — refined rise
