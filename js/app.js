@@ -72,6 +72,8 @@
     gsap.set(heroEls, { y: 24 });
     gsap.timeline({ delay: .15 })
       .to(heroEls, { opacity: 1, y: 0, duration: 1, stagger: .12, ease: 'power3.out' });
+    // safety: never leave hero text hidden if frames are throttled/interrupted
+    setTimeout(() => heroEls.forEach(el => el && (el.style.opacity = 1, el.style.transform = 'none')), 2600);
 
     gsap.registerPlugin(ScrollTrigger);
     document.querySelectorAll('.reveal').forEach(el => {
