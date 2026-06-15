@@ -73,6 +73,21 @@ img{display:block;max-width:100%}
     radial-gradient(50% 50% at 20% 80%,rgba(55,230,201,.22),transparent 70%);
   mix-blend-mode:screen;
 }
+/* ambient drifting light — subtle constant motion, strongest over the dark areas */
+.hero-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;mix-blend-mode:screen;z-index:1}
+.hero-fx i{position:absolute;display:block;border-radius:50%;filter:blur(70px);will-change:transform,opacity}
+.hero-fx i:nth-child(1){width:46vmax;height:46vmax;left:-16%;top:6%;
+  background:radial-gradient(circle,rgba(55,230,201,.40),transparent 68%);
+  animation:fx1 30s ease-in-out infinite}
+.hero-fx i:nth-child(2){width:40vmax;height:40vmax;right:-14%;top:30%;
+  background:radial-gradient(circle,rgba(77,140,255,.42),transparent 68%);
+  animation:fx2 38s ease-in-out infinite}
+.hero-fx i:nth-child(3){width:34vmax;height:34vmax;left:18%;bottom:-18%;
+  background:radial-gradient(circle,rgba(120,90,255,.30),transparent 70%);
+  animation:fx3 34s ease-in-out infinite}
+@keyframes fx1{0%,100%{transform:translate(0,0) scale(1);opacity:.5}50%{transform:translate(18%,12%) scale(1.18);opacity:.9}}
+@keyframes fx2{0%,100%{transform:translate(0,0) scale(1.05);opacity:.45}50%{transform:translate(-16%,18%) scale(.9);opacity:.85}}
+@keyframes fx3{0%,100%{transform:translate(0,0) scale(1);opacity:.4}50%{transform:translate(14%,-16%) scale(1.2);opacity:.75}}
 .hero-vignette{position:absolute;inset:0;background:
   linear-gradient(180deg,rgba(7,10,20,.35) 0%,rgba(7,10,20,.15) 35%,rgba(7,10,20,.85) 88%,var(--bg) 100%);}
 
@@ -88,7 +103,7 @@ img{display:block;max-width:100%}
 .hero-inner{position:relative;z-index:3;margin:auto;text-align:center;padding:0 20px 8vh;max-width:900px}
 .hero-eyebrow{color:var(--teal);letter-spacing:.34em;font-size:12px;font-weight:600;margin-bottom:18px;opacity:0}
 .title-mask{overflow:hidden;display:block;padding:0 .06em}
-.hero-title{font-size:clamp(64px,18vw,200px);font-weight:800;letter-spacing:.02em;line-height:1.06;padding-bottom:.12em;
+.hero-title{font-size:clamp(64px,18vw,200px);font-weight:800;letter-spacing:.02em;line-height:1.16;padding-bottom:.26em;
   background:linear-gradient(180deg,#fff 30%,#cdd7f5);-webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 10px 60px rgba(77,140,255,.25);opacity:0}
 .hero-tagline{color:#c4cce4;font-size:clamp(15px,2.2vw,20px);margin-top:18px;opacity:0}
