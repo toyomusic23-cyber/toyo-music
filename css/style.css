@@ -53,9 +53,9 @@ img{display:block;max-width:100%}
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-img{
-  position:absolute;inset:-6%;background-size:cover;background-position:center;
-  filter:saturate(1.05) brightness(.5) blur(2px);
-  transform:scale(1.12);animation:kenburns 24s ease-in-out infinite alternate;
+  position:absolute;inset:-6%;background-size:cover;background-position:center 42%;
+  filter:saturate(.92) contrast(1.02) brightness(.52) blur(0);
+  transform:scale(1.08);animation:kenburns 26s ease-in-out infinite alternate;
 }
 @keyframes kenburns{from{transform:scale(1.12) translate(0,0)}to{transform:scale(1.22) translate(-2%,-2%)}}
 .hero-glow{
