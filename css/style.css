@@ -89,7 +89,7 @@ img{display:block;max-width:100%}
 @keyframes fx2{0%,100%{transform:translate(0,0) scale(1.05);opacity:.08}50%{transform:translate(-14%,16%) scale(.92);opacity:.24}}
 @keyframes fx3{0%,100%{transform:translate(0,0) scale(1);opacity:.06}50%{transform:translate(12%,-14%) scale(1.16);opacity:.18}}
 .hero-vignette{position:absolute;inset:0;background:
-  linear-gradient(180deg,rgba(7,10,20,.35) 0%,rgba(7,10,20,.15) 35%,rgba(7,10,20,.85) 88%,var(--bg) 100%);}
+  linear-gradient(180deg,rgba(7,10,20,.4) 0%,rgba(7,10,20,.12) 26%,rgba(7,10,20,.45) 58%,rgba(7,10,20,.88) 80%,var(--bg) 93%);}
 
 .nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;
   max-width:var(--maxw);width:100%;margin:0 auto;padding:24px clamp(18px,4vw,40px)}
@@ -103,10 +103,10 @@ img{display:block;max-width:100%}
 .hero-inner{position:relative;z-index:3;margin:auto;text-align:center;padding:0 20px 8vh;max-width:900px}
 .hero-eyebrow{color:var(--teal);letter-spacing:.34em;font-size:12px;font-weight:600;margin-bottom:18px;opacity:0}
 .title-mask{overflow:hidden;display:block;padding:0 .06em}
-.hero-title{font-size:clamp(64px,18vw,200px);font-weight:800;letter-spacing:.02em;line-height:1.16;padding-bottom:.26em;
+.hero-title{font-size:clamp(52px,13vw,150px);font-weight:800;letter-spacing:.02em;line-height:1.16;padding-bottom:.26em;
   background:linear-gradient(180deg,#fff 30%,#cdd7f5);-webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 10px 60px rgba(77,140,255,.25);opacity:0}
-.hero-tagline{color:#c4cce4;font-size:clamp(15px,2.2vw,20px);margin-top:18px;opacity:0}
+.hero-tagline{color:#c4cce4;font-size:clamp(13.5px,1.8vw,17px);margin-top:16px;opacity:0;max-width:30em;margin-left:auto;margin-right:auto}
 .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px;opacity:0}
 
 .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:999px;font-weight:700;font-size:15px;
@@ -212,7 +212,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
   .nav-links{gap:14px;font-size:13px}
   .nav-logo{font-size:14px;letter-spacing:.2em}
   .hero-eyebrow{font-size:11px;letter-spacing:.26em;margin-bottom:14px}
-  .hero-title{font-size:clamp(56px,17vw,200px)}
+  .hero-title{font-size:clamp(44px,13.5vw,120px)}
   .hero-tagline{font-size:14.5px;padding:0 8px;margin-top:14px}
   .hero-cta{margin-top:28px;gap:10px}
   .btn{padding:13px 22px;font-size:14px}
