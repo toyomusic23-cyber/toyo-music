@@ -83,7 +83,7 @@ img{display:block;max-width:100%}
 
 .hero-inner{position:relative;z-index:3;margin:auto;text-align:center;padding:0 20px 8vh;max-width:900px}
 .hero-eyebrow{color:var(--teal);letter-spacing:.34em;font-size:12px;font-weight:600;margin-bottom:18px;opacity:0}
-.hero-title{font-size:clamp(64px,18vw,200px);font-weight:800;letter-spacing:.02em;line-height:.92;
+.hero-title{font-size:clamp(64px,18vw,200px);font-weight:800;letter-spacing:.02em;line-height:1.06;padding-bottom:.12em;
   background:linear-gradient(180deg,#fff 30%,#cdd7f5);-webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 10px 60px rgba(77,140,255,.25);opacity:0}
 .hero-tagline{color:#c4cce4;font-size:clamp(15px,2.2vw,20px);margin-top:18px;opacity:0}
@@ -113,7 +113,8 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
 
 /* ---------- MUSIC GRID ---------- */
 .grid{max-width:var(--maxw);margin:46px auto 0;padding:0 clamp(18px,4vw,40px);
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:clamp(16px,2vw,26px)}
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:clamp(16px,2vw,26px);
+  align-items:start}
 .card{position:relative;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--line);
   transition:transform .4s var(--ease),box-shadow .4s,border-color .4s;will-change:transform}
 .card:hover{transform:translateY(-6px);border-color:rgba(55,230,201,.4);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 40px rgba(77,140,255,.18)}
