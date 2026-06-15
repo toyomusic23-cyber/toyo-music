@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Toyo — Official</title>
+<meta name="description" content="Toyo — 都市の夜に効くサウンド。全曲を主要ストリーミングで配信中。" />
+<meta property="og:title" content="Toyo — Official" />
+<meta property="og:description" content="都市の夜に効くサウンド。Spotify / Apple Music / YouTube Music ほかで配信中。" />
+<meta property="og:type" content="music.musician" />
+<meta property="og:image" content="covers/coinlaundry-1280.webp" />
+<meta name="theme-color" content="#070a14" />
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+<link rel="preload" as="image" href="covers/coinlaundry-1280.webp" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- LOADER -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-name">Toyo</div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+
+  <!-- GRAIN OVERLAY -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-img" style="background-image:url('covers/kaisatsu-1280.webp')"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-vignette"></div>
+    </div>
+    <nav class="nav">
+      <a class="nav-logo" href="#top">TOYO</a>
+      <div class="nav-links">
+        <a href="#music">Music</a>
+        <a href="#about">About</a>
+        <a class="nav-cta" id="navFollow" target="_blank" rel="noopener">Follow</a>
+      </div>
+    </nav>
+    <div class="hero-inner">
+      <p class="hero-eyebrow">JAPAN · ALT / LO-FI POP</p>
+      <h1 class="hero-title">Toyo</h1>
+      <p class="hero-tagline">都市の夜に効く、静かで洗練されたサウンド。</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" id="heroListen" target="_blank" rel="noopener">
+          <span class="btn-ic">▶</span> いま聴く
+        </a>
+        <a class="btn btn-ghost" id="heroFollow" target="_blank" rel="noopener">＋ フォロー</a>
+      </div>
+      <a class="scroll-cue" href="#music" aria-label="スクロール"><span></span></a>
+    </div>
+  </header>
+
+  <!-- MUSIC -->
+  <main>
+    <section class="music" id="music">
+      <div class="section-head reveal">
+        <span class="section-kicker">DISCOGRAPHY</span>
+        <h2 class="section-title">Music</h2>
+        <p class="section-sub">全曲、主要ストリーミングで配信中。タップして各プラットフォームへ。</p>
+      </div>
+      <div class="grid" id="grid"><!-- songs injected by app.js --></div>
+    </section>
+
+    <!-- FOLLOW BAND -->
+    <section class="follow" id="follow">
+      <div class="follow-inner reveal">
+        <h2 class="follow-title">Follow Toyo</h2>
+        <p class="follow-sub">フォロー＆プレイリスト追加で、次のリリースをいち早く。</p>
+        <div class="follow-btns" id="followBtns"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+      <div class="about-inner reveal">
+        <span class="section-kicker">ABOUT</span>
+        <p class="about-text">
+          <strong>Toyo</strong> は、真夜中の都市を歩くような感情を音にするアーティスト。
+          ローファイなビートと内省的なメロディで、眠れない夜にそっと寄り添う。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-name">Toyo</div>
+    <div class="footer-social" id="footerSocial"></div>
+    <div class="footer-copy">© 2026 Toyo · All rights reserved</div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="js/songs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
