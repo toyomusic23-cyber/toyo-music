@@ -53,13 +53,16 @@ img{display:block;max-width:100%}
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-img-back{
-  position:absolute;inset:-8%;background-size:cover;background-position:center;
-  filter:brightness(.4) saturate(.85) blur(34px);
-  transform:scale(1.12);animation:kenburns 26s ease-in-out infinite alternate;
+  position:absolute;inset:-10%;background-size:cover;background-position:center;
+  filter:brightness(.2) saturate(.65) blur(50px);
+  transform:scale(1.2);animation:kenburns 26s ease-in-out infinite alternate;
 }
 .hero-img{
   position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center;
-  filter:brightness(.64) saturate(.95) contrast(1.02);
+  filter:brightness(.62) saturate(.95) contrast(1.02);
+  /* feather the edges so the photo melts into the dark — no hard side seams */
+  -webkit-mask-image:radial-gradient(105% 92% at 50% 44%, #000 50%, rgba(0,0,0,.4) 76%, transparent 100%);
+          mask-image:radial-gradient(105% 92% at 50% 44%, #000 50%, rgba(0,0,0,.4) 76%, transparent 100%);
 }
 @keyframes kenburns{from{transform:scale(1.12) translate(0,0)}to{transform:scale(1.22) translate(-2%,-2%)}}
 .hero-glow{
