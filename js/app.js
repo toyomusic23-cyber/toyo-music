@@ -98,17 +98,44 @@
     setTimeout(showAll, 3200);
 
     gsap.registerPlugin(ScrollTrigger);
+
+    // smooth momentum scroll — pointer devices only (mobile keeps crisp native scroll)
+    let lenis = null;
+    if (typeof Lenis !== 'undefined' && !window.matchMedia('(hover:none)').matches) {
+      lenis = new Lenis({ duration: 1.15, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(t => lenis.raf(t * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
+    // in-page anchors → smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const sel = a.getAttribute('href'); if (sel.length < 2) return;
+        const t = document.querySelector(sel); if (!t) return;
+        e.preventDefault();
+        lenis ? lenis.scrollTo(t, { duration: 1.2 }) : t.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // hero parallax — content drifts & fades on scroll (depth between sections)
+    gsap.to('.hero-inner', {
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+      yPercent: -16, opacity: .2, ease: 'none',
+    });
+
+    // section headings — refined rise
     document.querySelectorAll('.reveal').forEach(el => {
-      gsap.to(el, { scrollTrigger: { trigger: el, start: 'top 85%' }, opacity: 1, y: 0, duration: .9, ease: 'power3.out' });
+      gsap.to(el, { scrollTrigger: { trigger: el, start: 'top 86%' }, opacity: 1, y: 0, duration: 1.0, ease: 'power3.out' });
     });
+    // cards — smooth staggered rise + settle
     ScrollTrigger.batch('.card', {
-      start: 'top 92%',
-      onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .7, stagger: .08, ease: 'power3.out' }),
+      start: 'top 90%',
+      onEnter: b => gsap.to(b, { opacity: 1, y: 0, scale: 1, duration: .95, stagger: .09, ease: 'power3.out' }),
     });
-    // safety for cards/reveals too (in case ScrollTrigger never fires)
+    // safety: never leave content hidden if ScrollTrigger never fires
     setTimeout(() => document.querySelectorAll('.reveal,.card').forEach(el => {
-      if (getComputedStyle(el).opacity === '0') el.classList.add('is-in');
-    }), 4000);
+      if (getComputedStyle(el).opacity === '0') { el.style.opacity = 1; el.style.transform = 'none'; }
+    }), 4500);
   }
 
   let started = false;
