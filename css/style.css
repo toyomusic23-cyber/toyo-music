@@ -34,9 +34,9 @@ img{display:block;max-width:100%}
 #loader{
   position:fixed;inset:0;z-index:1000;background:#05070f;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
-  transition:opacity .8s var(--ease),visibility .8s;
+  transition:transform 1s var(--ease),opacity .7s var(--ease),visibility 1s;
 }
-#loader.done{opacity:0;visibility:hidden}
+#loader.done{opacity:0;transform:translateY(-101%);visibility:hidden}
 .loader-name{
   font-size:clamp(40px,9vw,86px);font-weight:800;letter-spacing:.12em;
   background:linear-gradient(120deg,#fff,var(--teal),var(--blue));
@@ -83,6 +83,7 @@ img{display:block;max-width:100%}
 
 .hero-inner{position:relative;z-index:3;margin:auto;text-align:center;padding:0 20px 8vh;max-width:900px}
 .hero-eyebrow{color:var(--teal);letter-spacing:.34em;font-size:12px;font-weight:600;margin-bottom:18px;opacity:0}
+.title-mask{overflow:hidden;display:block;padding:0 .06em}
 .hero-title{font-size:clamp(64px,18vw,200px);font-weight:800;letter-spacing:.02em;line-height:1.06;padding-bottom:.12em;
   background:linear-gradient(180deg,#fff 30%,#cdd7f5);-webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 10px 60px rgba(77,140,255,.25);opacity:0}
@@ -182,5 +183,37 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important}
   .reveal,.card{opacity:1;transform:none}
-  .hero-eyebrow,.hero-title,.hero-tagline,.hero-cta,.scroll-cue{opacity:1!important}
+  .hero-eyebrow,.hero-title,.hero-tagline,.hero-cta,.scroll-cue{opacity:1!important;transform:none!important}
+}
+
+/* ---------- MOBILE POLISH (most users are on phones) ---------- */
+@media(max-width:600px){
+  .nav{padding:16px 18px}
+  .nav-links{gap:14px;font-size:13px}
+  .nav-logo{font-size:14px;letter-spacing:.2em}
+  .hero-eyebrow{font-size:11px;letter-spacing:.26em;margin-bottom:14px}
+  .hero-title{font-size:clamp(56px,17vw,200px)}
+  .hero-tagline{font-size:14.5px;padding:0 8px;margin-top:14px}
+  .hero-cta{margin-top:28px;gap:10px}
+  .btn{padding:13px 22px;font-size:14px}
+  .section-head{padding-top:clamp(56px,16vw,130px)}
+  .section-title{font-size:clamp(30px,9vw,64px)}
+  .section-sub{font-size:13.5px;padding:0 6px}
+  .grid{grid-template-columns:1fr 1fr;gap:12px;margin-top:30px}
+  .card{border-radius:14px}
+  .card.featured{grid-column:span 2}
+  .card-meta{padding:10px 11px 12px}
+  .card-title{font-size:13px;line-height:1.3}
+  .card-mood{font-size:10px;margin-top:2px}
+  .plays{gap:7px;padding:12px}
+  .plays-label{font-size:9px;letter-spacing:.14em;margin-bottom:0}
+  .pbtn{width:94%;font-size:11.5px;padding:8px 10px;gap:6px}
+  .card.featured .pbtn{width:min(220px,70%);font-size:13px;padding:10px 12px}
+  .follow-title{font-size:clamp(28px,8vw,52px)}
+  .follow-btns{gap:9px}
+  .fbtn{padding:12px 16px;font-size:13px}
+  .about-text{font-size:16px;line-height:1.85}
+}
+@media(max-width:430px){
+  .nav-links a:not(.nav-cta){display:none}
 }

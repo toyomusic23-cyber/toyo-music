@@ -62,18 +62,40 @@
   /* ---------- loader + hero entrance ---------- */
   const loader = $('#loader');
   function startHero() {
-    loader.classList.add('done');
-    const heroEls = ['.hero-eyebrow', '.hero-title', '.hero-tagline', '.hero-cta', '.scroll-cue'].map(s => $(s));
-    if (reduce || typeof gsap === 'undefined') {
-      heroEls.forEach(el => el && (el.style.opacity = 1, el.style.transform = 'none'));
+    const eyebrow = $('.hero-eyebrow'), title = $('.hero-title'), tagline = $('.hero-tagline'),
+          cta = $('.hero-cta'), cue = $('.scroll-cue'), img = $('.hero-img');
+
+    // resting (final) state — used as fallback so content is NEVER stuck hidden
+    const showAll = () => {
+      [eyebrow, tagline, cue].forEach(el => el && (el.style.opacity = 1, el.style.transform = 'none', el.style.letterSpacing = ''));
+      if (title) { title.style.opacity = 1; title.style.transform = 'none'; }
+      if (cta) { cta.style.opacity = 1; cta.style.transform = 'none'; }
+      if (img) { img.style.opacity = 1; img.style.transform = 'none'; }
       document.querySelectorAll('.reveal,.card').forEach(el => el.classList.add('is-in'));
-      return;
-    }
-    gsap.set(heroEls, { y: 24 });
-    gsap.timeline({ delay: .15 })
-      .to(heroEls, { opacity: 1, y: 0, duration: 1, stagger: .12, ease: 'power3.out' });
-    // safety: never leave hero text hidden if frames are throttled/interrupted
-    setTimeout(() => heroEls.forEach(el => el && (el.style.opacity = 1, el.style.transform = 'none')), 2600);
+    };
+
+    loader.classList.add('done'); // CSS lifts the curtain upward
+
+    if (reduce || typeof gsap === 'undefined') { showAll(); return; }
+
+    // cinematic intro
+    gsap.set(img,     { opacity: 0, scale: 1.08, transformOrigin: '50% 45%' });
+    gsap.set(eyebrow, { opacity: 0, y: 16, letterSpacing: '0.7em' });
+    gsap.set(title,   { opacity: 1, yPercent: 120 });          // sits below the mask, revealed by rise
+    gsap.set(tagline, { opacity: 0, y: 18 });
+    gsap.set(cta,     { opacity: 0, y: 20, scale: .96 });
+    gsap.set(cue,     { opacity: 0 });
+
+    gsap.timeline({ delay: .5 })  // begins as the curtain is lifting
+      .to(img,     { opacity: 1, scale: 1, duration: 1.8, ease: 'power2.out' }, 0)
+      .to(eyebrow, { opacity: 1, y: 0, letterSpacing: '0.34em', duration: 1.0, ease: 'power3.out' }, .3)
+      .to(title,   { yPercent: 0, duration: 1.15, ease: 'power4.out' }, .45)
+      .to(tagline, { opacity: 1, y: 0, duration: .9, ease: 'power3.out' }, '-=.65')
+      .to(cta,     { opacity: 1, y: 0, scale: 1, duration: .8, ease: 'back.out(1.5)' }, '-=.5')
+      .to(cue,     { opacity: 1, duration: .6 }, '-=.25');
+
+    // safety: if frames are throttled/interrupted, force the resting state
+    setTimeout(showAll, 3200);
 
     gsap.registerPlugin(ScrollTrigger);
     document.querySelectorAll('.reveal').forEach(el => {
@@ -81,8 +103,12 @@
     });
     ScrollTrigger.batch('.card', {
       start: 'top 92%',
-      onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .7, stagger: .07, ease: 'power3.out' }),
+      onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .7, stagger: .08, ease: 'power3.out' }),
     });
+    // safety for cards/reveals too (in case ScrollTrigger never fires)
+    setTimeout(() => document.querySelectorAll('.reveal,.card').forEach(el => {
+      if (getComputedStyle(el).opacity === '0') el.classList.add('is-in');
+    }), 4000);
   }
 
   let started = false;
