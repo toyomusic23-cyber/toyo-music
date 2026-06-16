@@ -132,6 +132,26 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
 .section-sub{color:var(--muted);margin-top:14px;font-size:15px}
 
 /* ---------- MUSIC GRID ---------- */
+/* ---------- FEATURED RAIL (auto-scrolling carousel) ---------- */
+.rail{margin:40px 0 6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;cursor:grab;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.rail::-webkit-scrollbar{display:none}
+.rail.dragging{cursor:grabbing}
+.rail-track{display:flex;gap:clamp(18px,2.6vw,40px);width:max-content;padding:6px clamp(18px,4vw,40px)}
+.rail-card{flex:0 0 auto;width:clamp(190px,23vw,280px);border-radius:16px;overflow:hidden;position:relative;
+  background:var(--card);border:1px solid var(--line);
+  transition:transform .4s var(--ease),box-shadow .4s,border-color .4s}
+.rail-card:hover{transform:translateY(-6px);border-color:rgba(55,230,201,.4);box-shadow:0 22px 54px rgba(0,0,0,.55),0 0 36px rgba(77,140,255,.16)}
+.rail-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;pointer-events:none}
+.rail-card .rc-meta{padding:11px 14px 14px}
+.rail-card .rc-title{font-weight:700;font-size:14.5px;line-height:1.3}
+.rail-card .rc-mood{color:var(--muted);font-size:11px;margin-top:3px}
+@media(max-width:600px){
+  .rail-card{width:clamp(150px,46vw,200px)}
+  .rail-track{gap:14px}
+}
+
 .grid{max-width:var(--maxw);margin:46px auto 0;padding:0 clamp(18px,4vw,40px);
   display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:clamp(16px,2vw,26px);
   align-items:start}

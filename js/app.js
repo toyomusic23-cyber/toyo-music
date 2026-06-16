@@ -44,6 +44,46 @@
     }
   });
 
+  /* ---------- featured rail: auto-scrolls left, also manually scrollable/draggable ---------- */
+  const rail = $('#rail'), railTrack = $('#railTrack');
+  if (rail && railTrack) {
+    const railCard = s => `<a class="rail-card" href="${s.links.spotify}" target="_blank" rel="noopener" aria-label="${s.title} を聴く">
+        <img src="covers/${s.key}-640.webp" alt="${s.title} — Toyo" loading="lazy" onerror="this.onerror=null;this.src='covers/${s.key}-640.jpg'">
+        <div class="rc-meta"><div class="rc-title">${s.title}</div><div class="rc-mood">${s.mood || ''}</div></div>
+      </a>`;
+    const set = SONGS.map(railCard).join('');
+    railTrack.innerHTML = set + set; // two copies → seamless loop
+
+    let half = 0, paused = false;
+    const measure = () => { half = railTrack.scrollWidth / 2; };
+    measure(); window.addEventListener('load', measure); window.addEventListener('resize', measure); setTimeout(measure, 500);
+
+    // pause while the user is engaging
+    rail.addEventListener('mouseenter', () => paused = true);
+    rail.addEventListener('mouseleave', () => { paused = false; down = false; rail.classList.remove('dragging'); });
+    let resume;
+    const tempPause = () => { paused = true; clearTimeout(resume); resume = setTimeout(() => paused = false, 1500); };
+    rail.addEventListener('touchstart', tempPause, { passive: true });
+    rail.addEventListener('wheel', tempPause, { passive: true });
+
+    // mouse drag to scroll (touch uses native scrolling)
+    let down = false, sx = 0, sl = 0, moved = false;
+    rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; moved = false; sx = e.clientX; sl = rail.scrollLeft; rail.classList.add('dragging'); });
+    window.addEventListener('pointermove', e => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 4) moved = true; rail.scrollLeft = sl - dx; });
+    window.addEventListener('pointerup', () => { down = false; rail.classList.remove('dragging'); });
+    railTrack.addEventListener('click', e => { if (moved) e.preventDefault(); }, true); // ignore click after a drag
+
+    // continuous slow leftward flow + seamless wrap
+    const railTick = () => {
+      if (half) {
+        if (!paused && !reduce) rail.scrollLeft += 0.5;
+        if (rail.scrollLeft >= half) rail.scrollLeft -= half;
+      }
+      requestAnimationFrame(railTick);
+    };
+    requestAnimationFrame(railTick);
+  }
+
   /* ---------- wire CTAs ---------- */
   $('#heroListen').href = featured.links.spotify;
   [['#heroFollow'], ['#navFollow']].forEach(([sel]) => { $(sel).href = ARTIST_LINKS.spotify; });
