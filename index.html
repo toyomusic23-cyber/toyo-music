@@ -78,8 +78,9 @@
 
       <!-- 並び替えツールバー（URLに ?edit があるときだけ表示） -->
       <div class="edit-bar" id="editBar" hidden>
-        <span class="eb-msg">ドラッグで並び替え → 「順番をコピー」して送ってください（全公開に反映します）</span>
-        <button class="eb-btn primary" id="ebCopy">順番をコピー</button>
+        <span class="eb-msg">ドラッグで並び替え →「全公開する」で全員の画面に反映（合言葉が必要）</span>
+        <button class="eb-btn primary" id="ebPublish">全公開する</button>
+        <button class="eb-btn" id="ebCopy">順番をコピー</button>
         <button class="eb-btn" id="ebReset">リセット</button>
       </div>
     </section>
@@ -126,6 +127,6 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script src="js/songs.js?v=4"></script>
   <script src="js/lyrics.js?v=9"></script>
-  <script src="js/app.js?v=11"></script>
+  <script src="js/app.js?v=12"></script>
 </body>
 </html>

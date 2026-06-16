@@ -3,6 +3,10 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const featured = SONGS.find(s => s.featured) || SONGS[0];
 
+  // 公開アルバム順の保存先（Supabase）。anon/publishable キーは公開して安全（読み取り専用＋書込は合言葉必須）。
+  const SB_URL = 'https://lvminivpfztbvaepjqlz.supabase.co';
+  const SB_KEY = 'sb_publishable_9DdJC8RwquEvqlgsQuriug_0ypS2exk';
+
   const PLATS = [
     { k: 'spotify', label: 'Spotify' },
     { k: 'apple',   label: 'Apple Music' },
@@ -94,22 +98,45 @@
       setTimeout(() => (copyBtn.textContent = '順番をコピー'), 1800);
     });
     resetBtn && resetBtn.addEventListener('click', () => { localStorage.removeItem(ORDER_KEY); location.reload(); });
+
+    // 全公開: 合言葉を入力 → Supabase の publish_order を呼ぶ（合言葉はサーバー側で検証）
+    const publishBtn = $('#ebPublish');
+    publishBtn && publishBtn.addEventListener('click', async () => {
+      if (!SB_URL || !SB_KEY) { publishBtn.textContent = '保存先 未設定'; return; }
+      const order = [...grid.querySelectorAll('.card')].map(c => c.dataset.key);
+      const pass = window.prompt('全公開用の合言葉を入力（この順番が全員の画面に反映されます）:');
+      if (!pass) return;
+      publishBtn.disabled = true; publishBtn.textContent = '公開中…';
+      try {
+        const res = await fetch(`${SB_URL}/rest/v1/rpc/publish_order`, {
+          method: 'POST',
+          headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ p_order: order, p_pass: pass }),
+        });
+        if (res.ok) { publishBtn.textContent = '全公開しました ✓'; localStorage.removeItem(ORDER_KEY); }
+        else {
+          let msg = ''; try { msg = (await res.json()).message || ''; } catch (e) {}
+          publishBtn.textContent = /unauthorized/i.test(msg) ? '合言葉が違います' : '公開に失敗';
+        }
+      } catch (e) { publishBtn.textContent = 'ネットワークエラー'; }
+      finally { setTimeout(() => { publishBtn.disabled = false; publishBtn.textContent = '全公開する'; }, 2200); }
+    });
   }
 
   /* ---------- featured rail: auto-scrolls left, also manually scrollable/draggable ---------- */
   const rail = $('#rail'), railTrack = $('#railTrack');
+  let rebuildRail = null; // exposed so the published-order fetch can re-render the rail in the new order
   if (rail && railTrack) {
-    const railCard = s => `<a class="rail-card" href="${s.links.spotify}" target="_blank" rel="noopener" aria-label="${s.title} を聴く">
+    const railCard = s => `<a class="rail-card" data-key="${s.key}" href="${s.links.spotify}" target="_blank" rel="noopener" aria-label="${s.title} を聴く">
         <img src="covers/${s.key}-640.webp" alt="${s.title} — Toyo" loading="lazy" onerror="this.onerror=null;this.src='covers/${s.key}-640.jpg'">
         <div class="rc-meta"><div class="rc-title">${s.title}</div><div class="rc-mood">${s.mood || ''}</div></div>
       </a>`;
-    const railOrder = [featured, ...gridSongs]; // same display order as the collection (incl. saved reorder)
-    const set = railOrder.map(railCard).join('');
-    railTrack.innerHTML = set + set; // two copies → seamless loop
-
     let half = 0, paused = false, pos = rail.scrollLeft; // pos = float accumulator (iOS scrollLeft is integer-quantized)
     const measure = () => { half = railTrack.scrollWidth / 2; };
-    measure(); window.addEventListener('load', measure); window.addEventListener('resize', measure); setTimeout(measure, 500);
+    const buildTrack = songs => { railTrack.innerHTML = songs.map(railCard).join('').repeat(2); measure(); }; // two copies → seamless loop
+    buildTrack([featured, ...gridSongs]); // same display order as the collection (incl. saved reorder)
+    rebuildRail = songs => buildTrack(songs);
+    window.addEventListener('load', measure); window.addEventListener('resize', measure); setTimeout(measure, 500);
 
     // pause while the user is engaging
     rail.addEventListener('mouseenter', () => paused = true);
@@ -145,6 +172,29 @@
     };
     requestAnimationFrame(railTick);
   }
+
+  /* ---------- published global order (Supabase) ----------
+     公開順を読み取り、既に描画済みの grid / rail をその順に並べ替える。
+     失敗時は songs.js のデフォルト順のまま（初期描画は即座＝待たない）。 */
+  async function applyPublishedOrder() {
+    if (!SB_URL || !SB_KEY) return;
+    let order;
+    try {
+      const res = await fetch(`${SB_URL}/rest/v1/grid_order?id=eq.1&select=order_keys`,
+        { headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY } });
+      if (!res.ok) return;
+      const rows = await res.json();
+      order = rows && rows[0] && rows[0].order_keys;
+    } catch (e) { return; }
+    if (!Array.isArray(order) || !order.length) return;
+    const rank = k => { const i = order.indexOf(k); return i === -1 ? 9999 : i; };
+    gridSongs.sort((a, b) => rank(a.key) - rank(b.key));
+    if (grid) [...grid.querySelectorAll('.card')]
+      .sort((a, b) => rank(a.dataset.key) - rank(b.dataset.key))
+      .forEach(c => grid.appendChild(c));
+    if (rebuildRail) rebuildRail([featured, ...gridSongs]);
+  }
+  applyPublishedOrder();
 
   /* ---------- wire CTAs ---------- */
   $('#heroListen').href = featured.links.spotify;
