@@ -78,8 +78,8 @@
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLyric(); });
 
-  // reorder editor — open the site with ?edit to drag-rearrange the collection
-  if (/[?&]edit\b/.test(location.search) && typeof Sortable !== 'undefined') {
+  // reorder editor — only opens with the secret URL ?edit=toyomaru-king (others can't access it)
+  if (new URLSearchParams(location.search).get('edit') === 'toyomaru-king' && typeof Sortable !== 'undefined') {
     document.body.classList.add('editing');
     const bar = $('#editBar'); if (bar) bar.hidden = false;
     Sortable.create(grid, {
