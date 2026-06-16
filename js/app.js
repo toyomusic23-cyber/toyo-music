@@ -129,7 +129,7 @@
     // continuous slow leftward flow + seamless wrap
     const railTick = () => {
       if (half) {
-        if (!paused && !reduce) rail.scrollLeft += 0.5;
+        if (!paused) rail.scrollLeft += 0.5;   // flows on all devices (intentional showcase motion)
         if (rail.scrollLeft >= half) rail.scrollLeft -= half;
       }
       requestAnimationFrame(railTick);
@@ -144,7 +144,10 @@
   const followBtns = PLATS.map(p =>
     `<a class="fbtn ${p.k}" href="${ARTIST_LINKS[p.k]}" target="_blank" rel="noopener">
        <span class="dot ${p.k}"></span>${p.k === 'spotify' || p.k === 'apple' ? 'Follow on ' : ''}${p.label}</a>`).join('');
-  $('#followBtns').innerHTML = followBtns;
+  const igFollow = ARTIST_LINKS.instagram
+    ? `<a class="fbtn instagram" href="${ARTIST_LINKS.instagram}" target="_blank" rel="noopener"><span class="dot" style="background:#e1306c"></span>Instagram</a>`
+    : '';
+  $('#followBtns').innerHTML = followBtns + igFollow;
 
   const social = [];
   if (ARTIST_LINKS.instagram) social.push(`<a href="${ARTIST_LINKS.instagram}" target="_blank" rel="noopener">Instagram</a>`);

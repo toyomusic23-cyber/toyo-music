@@ -267,6 +267,7 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
 .fbtn.apple:hover{border-color:#fc3c44;box-shadow:0 0 30px rgba(252,60,68,.25)}
 .fbtn.youtube:hover{border-color:#ff3b3b;box-shadow:0 0 30px rgba(255,59,59,.22)}
 .fbtn.amazon:hover{border-color:#22b6c6;box-shadow:0 0 30px rgba(34,182,198,.22)}
+.fbtn.instagram:hover{border-color:#e1306c;box-shadow:0 0 30px rgba(225,48,108,.25)}
 
 /* ---------- ABOUT ---------- */
 .about{padding:0 clamp(18px,4vw,40px) clamp(80px,12vw,140px)}
