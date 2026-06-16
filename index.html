@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#070a14" />
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
 <link rel="preload" as="image" href="covers/hero-1440.webp" />
-<link rel="stylesheet" href="css/style.css?v=2" />
+<link rel="stylesheet" href="css/style.css?v=3" />
 </head>
 <body>
   <!-- LOADER -->
@@ -63,8 +63,25 @@
         <h2 class="section-title">Music</h2>
         <p class="section-sub">全曲、主要ストリーミングで配信中。タップして各プラットフォームへ。</p>
       </div>
-      <div class="rail reveal" id="rail" aria-label="おすすめ"><div class="rail-track" id="railTrack"></div></div>
+      <!-- 動いている部分：自動スクロールのショーケース -->
+      <div class="rail-wrap reveal">
+        <div class="rail-cap"><span class="dotpulse"></span>PICK UP<em>自動で流れています</em></div>
+        <div class="rail" id="rail" aria-label="おすすめ"><div class="rail-track" id="railTrack"></div></div>
+      </div>
+
+      <!-- 境目 -->
+      <div class="coll-head reveal"><span class="coll-line"></span><span class="coll-label">ALL RELEASES</span><span class="coll-line"></span></div>
+
+      <!-- 固定部分：注目1曲＋コレクション -->
+      <div class="featured-slot" id="featured"></div>
       <div class="grid" id="grid"><!-- songs injected by app.js --></div>
+
+      <!-- 並び替えツールバー（URLに ?edit があるときだけ表示） -->
+      <div class="edit-bar" id="editBar" hidden>
+        <span class="eb-msg">ドラッグで並び替え → 「順番をコピー」して送ってください（全公開に反映します）</span>
+        <button class="eb-btn primary" id="ebCopy">順番をコピー</button>
+        <button class="eb-btn" id="ebReset">リセット</button>
+      </div>
     </section>
 
     <!-- FOLLOW BAND -->
@@ -96,7 +113,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="js/songs.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="js/songs.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
 </body>
 </html>

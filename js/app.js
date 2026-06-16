@@ -10,39 +10,71 @@
     { k: 'amazon',  label: 'Amazon Music' },
   ];
 
-  /* ---------- render music grid ---------- */
+  /* ---------- music: featured (pinned big) + reorderable grid ---------- */
   const grid = $('#grid');
-  grid.innerHTML = SONGS.map(s => {
-    const plays = PLATS.map(p =>
-      `<a class="pbtn ${p.k}" href="${s.links[p.k]}" target="_blank" rel="noopener">
-         <span class="dot ${p.k}"></span>${p.label}</a>`).join('');
-    return `<article class="card${s.featured ? ' featured' : ''}" data-key="${s.key}">
-      <div class="card-art">
-        ${s.featured ? '<span class="badge">FEATURED</span>' : ''}
-        <img src="covers/${s.key}-640.webp" alt="${s.title} — Toyo" loading="lazy"
-             onerror="this.onerror=null;this.src='covers/${s.key}-640.jpg'">
-        <div class="plays">
-          <span class="plays-label">Listen on</span>${plays}
-        </div>
-      </div>
-      <div class="card-meta">
-        <div class="card-title">${s.title}</div>
-        <div class="card-mood">${s.mood || ''}</div>
-      </div>
-    </article>`;
-  }).join('');
+  const featuredEl = $('#featured');
+  const ORDER_KEY = 'toyo_grid_order';
+  const platBtns = s => PLATS.map(p =>
+    `<a class="pbtn ${p.k}" href="${s.links[p.k]}" target="_blank" rel="noopener"><span class="dot ${p.k}"></span>${p.label}</a>`).join('');
 
-  /* tap-to-open on touch devices */
+  // featured big card at the top (pinned)
+  if (featuredEl && featured) {
+    featuredEl.innerHTML = `<div class="feat-card" data-key="${featured.key}">
+      <div class="feat-art"><img src="covers/${featured.key}-1280.webp" alt="${featured.title} — Toyo"
+        onerror="this.onerror=null;this.src='covers/${featured.key}-640.jpg'"></div>
+      <div class="feat-info">
+        <span class="feat-badge">FEATURED</span>
+        <div class="feat-title">${featured.title}</div>
+        <div class="feat-mood">${featured.mood || ''}</div>
+        <div class="feat-plays">${platBtns(featured)}</div>
+      </div></div>`;
+  }
+
+  // grid = all songs except the featured one, in the saved custom order if present
+  let gridSongs = SONGS.filter(s => s !== featured);
+  try {
+    const saved = JSON.parse(localStorage.getItem(ORDER_KEY) || 'null');
+    if (Array.isArray(saved) && saved.length)
+      gridSongs.sort((a, b) => (saved.indexOf(a.key) + 1 || 999) - (saved.indexOf(b.key) + 1 || 999));
+  } catch (e) {}
+
+  const cardHTML = s => `<article class="card" data-key="${s.key}">
+      <div class="card-art">
+        <img src="covers/${s.key}-640.webp" alt="${s.title} — Toyo" loading="lazy" onerror="this.onerror=null;this.src='covers/${s.key}-640.jpg'">
+        <div class="plays"><span class="plays-label">Listen on</span>${platBtns(s)}</div>
+      </div>
+      <div class="card-meta"><div class="card-title">${s.title}</div><div class="card-mood">${s.mood || ''}</div></div>
+    </article>`;
+  grid.innerHTML = gridSongs.map(cardHTML).join('');
+
+  // tap-to-open platform buttons (touch)
   grid.addEventListener('click', e => {
+    if (document.body.classList.contains('editing')) return;
     const card = e.target.closest('.card');
-    if (!card) return;
-    if (e.target.closest('a')) return;            // let links work
+    if (!card || e.target.closest('a')) return;
     if (window.matchMedia('(hover:none)').matches) {
       document.querySelectorAll('.card.open').forEach(c => c !== card && c.classList.remove('open'));
-      card.classList.toggle('open');
-      e.preventDefault();
+      card.classList.toggle('open'); e.preventDefault();
     }
   });
+
+  // reorder editor — open the site with ?edit to drag-rearrange the collection
+  if (/[?&]edit\b/.test(location.search) && typeof Sortable !== 'undefined') {
+    document.body.classList.add('editing');
+    const bar = $('#editBar'); if (bar) bar.hidden = false;
+    Sortable.create(grid, {
+      animation: 180, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag',
+      onEnd: () => localStorage.setItem(ORDER_KEY, JSON.stringify([...grid.querySelectorAll('.card')].map(c => c.dataset.key))),
+    });
+    const copyBtn = $('#ebCopy'), resetBtn = $('#ebReset');
+    copyBtn && copyBtn.addEventListener('click', async () => {
+      const text = JSON.stringify([...grid.querySelectorAll('.card')].map(c => c.dataset.key));
+      try { await navigator.clipboard.writeText(text); copyBtn.textContent = 'コピーしました ✓'; }
+      catch (e) { window.prompt('この順番をコピーして送ってください:', text); }
+      setTimeout(() => (copyBtn.textContent = '順番をコピー'), 1800);
+    });
+    resetBtn && resetBtn.addEventListener('click', () => { localStorage.removeItem(ORDER_KEY); location.reload(); });
+  }
 
   /* ---------- featured rail: auto-scrolls left, also manually scrollable/draggable ---------- */
   const rail = $('#rail'), railTrack = $('#railTrack');
