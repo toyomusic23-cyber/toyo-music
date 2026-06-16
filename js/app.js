@@ -107,7 +107,7 @@
     const set = railOrder.map(railCard).join('');
     railTrack.innerHTML = set + set; // two copies → seamless loop
 
-    let half = 0, paused = false;
+    let half = 0, paused = false, pos = rail.scrollLeft; // pos = float accumulator (iOS scrollLeft is integer-quantized)
     const measure = () => { half = railTrack.scrollWidth / 2; };
     measure(); window.addEventListener('load', measure); window.addEventListener('resize', measure); setTimeout(measure, 500);
 
@@ -118,6 +118,8 @@
     const tempPause = () => { paused = true; clearTimeout(resume); resume = setTimeout(() => paused = false, 1500); };
     rail.addEventListener('touchstart', tempPause, { passive: true });
     rail.addEventListener('wheel', tempPause, { passive: true });
+    // user (touch/drag/wheel) moved the rail → re-sync the float accumulator so auto-drift continues from there
+    rail.addEventListener('scroll', () => { if (paused) pos = rail.scrollLeft; }, { passive: true });
 
     // mouse drag to scroll (touch uses native scrolling)
     let down = false, sx = 0, sl = 0, moved = false;
@@ -127,10 +129,17 @@
     railTrack.addEventListener('click', e => { if (moved) e.preventDefault(); }, true); // ignore click after a drag
 
     // continuous slow leftward flow + seamless wrap
+    // NOTE: advance a float accumulator and write an integer scrollLeft. iOS/WebKit
+    // quantizes scrollLeft to whole pixels, so a raw `+= 0.5` rounds back to the same
+    // value every frame and never moves on mobile. Rounding a monotonically-growing
+    // float fixes that while staying smooth on desktop.
     const railTick = () => {
       if (half) {
-        if (!paused) rail.scrollLeft += 0.5;   // flows on all devices (intentional showcase motion)
-        if (rail.scrollLeft >= half) rail.scrollLeft -= half;
+        if (!paused) {
+          pos += 0.5;                 // flows on all devices (intentional showcase motion)
+          if (pos >= half) pos -= half;
+          rail.scrollLeft = Math.round(pos);
+        }
       }
       requestAnimationFrame(railTick);
     };

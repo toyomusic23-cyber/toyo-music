@@ -118,7 +118,7 @@ img{display:block;max-width:100%}
 .btn-ghost:hover{border-color:var(--teal)}
 .btn-ic{font-size:12px}
 
-.scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);width:24px;height:38px;
+.scroll-cue{position:relative;margin:28px auto 0;width:24px;height:38px;
   border:1px solid rgba(255,255,255,.3);border-radius:14px;display:block;opacity:0}
 .scroll-cue span{position:absolute;top:7px;left:50%;width:4px;height:7px;margin-left:-2px;border-radius:2px;background:var(--teal);
   animation:scroll 1.6s var(--ease) infinite}
