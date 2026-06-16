@@ -103,7 +103,8 @@
         <img src="covers/${s.key}-640.webp" alt="${s.title} — Toyo" loading="lazy" onerror="this.onerror=null;this.src='covers/${s.key}-640.jpg'">
         <div class="rc-meta"><div class="rc-title">${s.title}</div><div class="rc-mood">${s.mood || ''}</div></div>
       </a>`;
-    const set = SONGS.map(railCard).join('');
+    const railOrder = [featured, ...gridSongs]; // same display order as the collection (incl. saved reorder)
+    const set = railOrder.map(railCard).join('');
     railTrack.innerHTML = set + set; // two copies → seamless loop
 
     let half = 0, paused = false;
