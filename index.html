@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#070a14" />
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
 <link rel="preload" as="image" href="covers/hero-1440.webp" />
-<link rel="stylesheet" href="css/style.css?v=3" />
+<link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 <body>
   <!-- LOADER -->
@@ -98,7 +98,7 @@
       <div class="about-inner reveal">
         <span class="section-kicker">ABOUT</span>
         <p class="about-text">
-          <strong>Toyo</strong> の音楽は、ひとつのジャンルに収まらない。静かな夜に合う曲も、前を向きたい日に聴きたい曲も、ふとした感情から生まれる。日常のいろんな瞬間に寄り添う、自由な音楽。
+          <strong>Toyo</strong> の音楽は、ひとつのジャンルに収まらない。静かな夜に合う曲も、前を向きたい日に聴きたい曲も、ふとした感情から生まれる。<br><br>日常のいろんな瞬間に寄り添う、自由な音楽。
         </p>
       </div>
     </section>
@@ -111,10 +111,21 @@
     <div class="footer-copy">© 2026 Toyo · All rights reserved</div>
   </footer>
 
+  <!-- 歌詞モーダル -->
+  <div class="lyric-modal" id="lyricModal" hidden>
+    <div class="lm-backdrop" data-close></div>
+    <div class="lm-panel" role="dialog" aria-modal="true">
+      <button class="lm-close" data-close aria-label="閉じる">✕</button>
+      <div class="lm-title" id="lmTitle"></div>
+      <pre class="lm-body" id="lmBody"></pre>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-  <script src="js/songs.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/songs.js?v=4"></script>
+  <script src="js/lyrics.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>

@@ -199,6 +199,24 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
 .eb-btn:hover{border-color:var(--teal)}
 .eb-btn.primary{background:linear-gradient(120deg,var(--teal),var(--blue));color:#04121a;border:none}
 
+/* 歌詞ボタン + モーダル */
+.lyric-btn{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:11.5px;font-weight:700;letter-spacing:.04em;
+  color:var(--teal);background:none;border:none;padding:0;cursor:pointer}
+.lyric-btn:hover{text-decoration:underline}
+.editing .lyric-btn{display:none}
+.feat-lyric{margin-top:2px}
+.lyric-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+.lyric-modal[hidden]{display:none}
+.lm-backdrop{position:absolute;inset:0;background:rgba(3,5,12,.8);backdrop-filter:blur(6px)}
+.lm-panel{position:relative;z-index:1;width:min(560px,100%);max-height:84vh;overflow:auto;background:var(--bg2);
+  border:1px solid var(--line);border-radius:18px;padding:30px clamp(22px,4vw,40px) 36px;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);animation:lmIn .35s var(--ease)}
+@keyframes lmIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+.lm-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1}
+.lm-close:hover{color:var(--ink)}
+.lm-title{font-size:20px;font-weight:800;margin-bottom:18px;padding-right:30px}
+.lm-body{font-family:inherit;white-space:pre-wrap;color:#d7deef;font-size:15px;line-height:2;margin:0}
+
 .grid{max-width:var(--maxw);margin:46px auto 0;padding:0 clamp(18px,4vw,40px);
   display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:clamp(16px,2vw,26px);
   align-items:start}

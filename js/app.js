@@ -16,6 +16,8 @@
   const ORDER_KEY = 'toyo_grid_order';
   const platBtns = s => PLATS.map(p =>
     `<a class="pbtn ${p.k}" href="${s.links[p.k]}" target="_blank" rel="noopener"><span class="dot ${p.k}"></span>${p.label}</a>`).join('');
+  const hasLyrics = s => typeof LYRICS !== 'undefined' && LYRICS[s.key];
+  const lyricBtn = (s, cls = '') => hasLyrics(s) ? `<button class="lyric-btn ${cls}" data-lyric="${s.key}">♪ 歌詞を見る</button>` : '';
 
   // featured big card at the top (pinned)
   if (featuredEl && featured) {
@@ -27,6 +29,7 @@
         <div class="feat-title">${featured.title}</div>
         <div class="feat-mood">${featured.mood || ''}</div>
         <div class="feat-plays">${platBtns(featured)}</div>
+        ${lyricBtn(featured, 'feat-lyric')}
       </div></div>`;
   }
 
@@ -43,7 +46,7 @@
         <img src="covers/${s.key}-640.webp" alt="${s.title} — Toyo" loading="lazy" onerror="this.onerror=null;this.src='covers/${s.key}-640.jpg'">
         <div class="plays"><span class="plays-label">Listen on</span>${platBtns(s)}</div>
       </div>
-      <div class="card-meta"><div class="card-title">${s.title}</div><div class="card-mood">${s.mood || ''}</div></div>
+      <div class="card-meta"><div class="card-title">${s.title}</div><div class="card-mood">${s.mood || ''}</div>${lyricBtn(s)}</div>
     </article>`;
   grid.innerHTML = gridSongs.map(cardHTML).join('');
 
@@ -51,12 +54,29 @@
   grid.addEventListener('click', e => {
     if (document.body.classList.contains('editing')) return;
     const card = e.target.closest('.card');
-    if (!card || e.target.closest('a')) return;
+    if (!card || e.target.closest('a') || e.target.closest('.lyric-btn')) return;
     if (window.matchMedia('(hover:none)').matches) {
       document.querySelectorAll('.card.open').forEach(c => c !== card && c.classList.remove('open'));
       card.classList.toggle('open'); e.preventDefault();
     }
   });
+
+  // lyrics modal
+  const lmModal = $('#lyricModal'), lmTitle = $('#lmTitle'), lmBody = $('#lmBody');
+  const closeLyric = () => { if (lmModal) { lmModal.hidden = true; document.body.style.overflow = ''; } };
+  const openLyric = k => {
+    if (typeof LYRICS === 'undefined' || !LYRICS[k] || !lmModal) return;
+    const s = SONGS.find(x => x.key === k);
+    lmTitle.textContent = s ? s.title : '';
+    lmBody.textContent = LYRICS[k];
+    lmModal.hidden = false; document.body.style.overflow = 'hidden';
+  };
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-lyric]');
+    if (b) { if (document.body.classList.contains('editing')) return; e.preventDefault(); openLyric(b.getAttribute('data-lyric')); return; }
+    if (e.target.closest('[data-close]')) closeLyric();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLyric(); });
 
   // reorder editor — open the site with ?edit to drag-rearrange the collection
   if (/[?&]edit\b/.test(location.search) && typeof Sortable !== 'undefined') {
