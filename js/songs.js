@@ -16,6 +16,22 @@ const ARTIST_LINKS = {
 
 // 新しい順（mymusic順）。cover はファイル名キー。featured=ヒーロー強調。
 const SONGS = [
+  // --- 新リリース（2026-06 追加・mood は仮。要なら修正可）---
+  { key:"alwaysback",    title:"I'm Always Back",     mood:"anthemic comeback / pop" },
+  { key:"tsukaten",      title:"通過点",               mood:"reflective alt-pop" },
+  { key:"uramu",         title:"裏夢",                 mood:"moody alt-pop" },
+  { key:"lowfriquency",  title:"Low Friquency",       mood:"bass-heavy electronic" },
+  { key:"stillstanding", title:"Still Standing",      mood:"anthemic rock" },
+  { key:"rideonit",      title:"Ride On It",          mood:"groove / dance" },
+  { key:"erandekita",    title:"選んできた私",         mood:"empowering pop" },
+  { key:"nedan",         title:"値段をつけさせない",   mood:"defiant pop anthem" },
+  { key:"azatoi",        title:"あざといんじゃない",   mood:"playful pop" },
+  { key:"tomaranai",     title:"止まらない箱",         mood:"energetic dance pop" },
+  { key:"dividedmind",   title:"Divided Mind",        mood:"introspective alt" },
+  { key:"karita",        title:"借りた人生",           mood:"emotional alt-pop" },
+  { key:"saikessho",     title:"再結晶",               mood:"cinematic pop" },
+  { key:"meitei",        title:"酩酊",                 mood:"hazy lo-fi" },
+  // --- 既存 ---
   { key:"honto",       title:"本当に選んでるなら", mood:"alt groove / dance rock", spotifyId:"7kSQoUJOuaWTBNyxkhCVyf" },
   { key:"reframing",   title:"リフレーミング",     mood:"emotional pop" },
   { key:"kansokusha",  title:"僕らは観測者",       mood:"cinematic alt-pop" },
