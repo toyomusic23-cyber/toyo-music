@@ -214,6 +214,48 @@
   social.push(`<a href="${ARTIST_LINKS.apple}" target="_blank" rel="noopener">Apple Music</a>`);
   $('#footerSocial').innerHTML = social.join('');
 
+  /* ---------- analytics: GTM dataLayer events（曲×プラットフォームの表示/クリック）---------- */
+  (function analytics(){
+    const dl = o => (window.dataLayer = window.dataLayer || []).push(o);
+    const titleOf = key => { const s = SONGS.find(x => x.key === key); return s ? s.title : ''; };
+    const platOf = el => ['spotify','apple','youtube','amazon','instagram'].find(p => el.classList.contains(p)) || '';
+
+    // クリック: プラットフォームボタン(一覧/注目)・PICK UPカード・フォロー帯・歌詞・ヒーローCTA
+    document.addEventListener('click', e => {
+      const pbtn = e.target.closest('.pbtn');
+      const rail = e.target.closest('.rail-card');
+      const fbtn = e.target.closest('.fbtn');
+      const lyr  = e.target.closest('.lyric-btn');
+      const keyEl = e.target.closest('[data-key]');
+      const key = keyEl ? keyEl.dataset.key : '';
+      if (pbtn) {
+        dl({ event:'platform_click', song_title: titleOf(key), song_key: key, platform: platOf(pbtn),
+             location: e.target.closest('.feat-card') ? 'featured' : 'grid' });
+      } else if (rail) {
+        dl({ event:'platform_click', song_title: titleOf(key), song_key: key, platform:'spotify', location:'pickup' });
+      } else if (fbtn) {
+        dl({ event:'follow_click', platform: platOf(fbtn), location:'follow' });
+      } else if (lyr) {
+        dl({ event:'lyric_view', song_title: titleOf(key), song_key: key });
+      }
+    });
+    const hero = (sel, cta) => { const el = $(sel); el && el.addEventListener('click', () => dl({ event:'hero_cta', cta })); };
+    hero('#heroListen','listen'); hero('#heroFollow','follow'); hero('#navFollow','nav_follow');
+
+    // 表示(インプレッション): コレクションの各カードが画面に入ったら1回だけ計測
+    if ('IntersectionObserver' in window) {
+      const seen = new Set();
+      const io = new IntersectionObserver(es => es.forEach(en => {
+        if (!en.isIntersecting) return;
+        const k = en.target.dataset.key; if (!k || seen.has(k)) return;
+        seen.add(k);
+        dl({ event:'song_view', song_title: titleOf(k), song_key: k,
+             location: en.target.classList.contains('feat-card') ? 'featured' : 'grid' });
+      }), { threshold: 0.5 });
+      document.querySelectorAll('#grid .card[data-key], #featured .feat-card[data-key]').forEach(el => io.observe(el));
+    }
+  })();
+
   /* ---------- loader + hero entrance ---------- */
   const loader = $('#loader');
   function startHero() {

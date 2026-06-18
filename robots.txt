@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://toyomusic23-cyber.github.io/toyo-music/sitemap.xml
