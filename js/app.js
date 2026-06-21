@@ -3,6 +3,15 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const featured = SONGS.find(s => s.featured) || SONGS[0];
 
+  // 画像フェードイン/スケルトンを有効化（このクラスが無い＝JS不発時は素のまま表示＝画像が消えない）
+  document.documentElement.classList.add('js');
+  const wireImg = (scope) => (scope || document)
+    .querySelectorAll('.card-art img,.feat-art img,.rail-card img').forEach(img => {
+      const done = () => { img.classList.add('loaded'); const p = img.closest('.card-art,.feat-art'); if (p) p.classList.add('ready'); };
+      if (img.complete && img.naturalWidth > 0) done();
+      else { img.addEventListener('load', done, { once: true }); img.addEventListener('error', done, { once: true }); }
+    });
+
   // 公開アルバム順の保存先（Supabase）。anon/publishable キーは公開して安全（読み取り専用＋書込は合言葉必須）。
   const SB_URL = 'https://lvminivpfztbvaepjqlz.supabase.co';
   const SB_KEY = 'sb_publishable_9DdJC8RwquEvqlgsQuriug_0ypS2exk';
@@ -53,6 +62,7 @@
       <div class="card-meta"><div class="card-title">${s.title}</div><div class="card-mood">${s.mood || ''}</div>${lyricBtn(s)}</div>
     </article>`;
   grid.innerHTML = gridSongs.map(cardHTML).join('');
+  wireImg(); // 画像ロード→フェードイン配線（featured + grid）
 
   // tap-to-open platform buttons (touch)
   grid.addEventListener('click', e => {
@@ -133,7 +143,7 @@
       </a>`;
     let half = 0, paused = false, pos = rail.scrollLeft; // pos = float accumulator (iOS scrollLeft is integer-quantized)
     const measure = () => { half = railTrack.scrollWidth / 2; };
-    const buildTrack = songs => { railTrack.innerHTML = songs.map(railCard).join('').repeat(2); measure(); }; // two copies → seamless loop
+    const buildTrack = songs => { railTrack.innerHTML = songs.map(railCard).join('').repeat(2); measure(); wireImg(rail); }; // two copies → seamless loop
     buildTrack([featured, ...gridSongs]); // same display order as the collection (incl. saved reorder)
     rebuildRail = songs => buildTrack(songs);
     window.addEventListener('load', measure); window.addEventListener('resize', measure); setTimeout(measure, 500);

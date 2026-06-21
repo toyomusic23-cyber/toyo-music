@@ -324,3 +324,35 @@ main{position:relative;z-index:2;background:linear-gradient(180deg,var(--bg),var
 @media(max-width:430px){
   .nav-links a:not(.nav-cta){display:none}
 }
+
+/* ---------- MICRO-INTERACTIONS & LOADING POLISH (2026-06-19) ---------- */
+/* 画像のフェードインは JS 進行時のみ(html.js)。JS不発なら素のまま表示＝画像が消えない保証 */
+html.js .card-art img,
+html.js .feat-art img,
+html.js .rail-card img{opacity:0;transition:opacity .55s var(--ease)}
+html.js .card-art img.loaded,
+html.js .feat-art img.loaded,
+html.js .rail-card img.loaded{opacity:1}
+
+/* ロード中スケルトン(控えめなシマー)。画像が乗ったら親 .ready で停止 */
+.feat-art{position:relative;overflow:hidden}
+html.js .card-art:not(.ready)::before,
+html.js .feat-art:not(.ready)::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(100deg,rgba(255,255,255,.025) 30%,rgba(255,255,255,.075) 50%,rgba(255,255,255,.025) 70%);
+  background-size:200% 100%;animation:shimmer 1.4s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* 押し込みの手応え(タップ/クリックの微反応・自然な抑えめ) */
+.btn:active,.pbtn:active,.fbtn:active,.eb-btn:active,.lyric-btn:active{transform:scale(.96)}
+.card:active{transform:translateY(-3px) scale(.987)}
+.rail-card:active{transform:translateY(-3px) scale(.985)}
+.feat-card:active{transform:scale(.992)}
+
+/* キーボード操作のフォーカスリング(マウス時は出さない＝アクセシビリティ) */
+a:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:8px}
+
+@media(prefers-reduced-motion:reduce){
+  html.js .card-art img,html.js .feat-art img,html.js .rail-card img{opacity:1!important}
+  html.js .card-art::before,html.js .feat-art::before{display:none!important}
+}
