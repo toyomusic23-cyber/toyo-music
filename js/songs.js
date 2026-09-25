@@ -16,6 +16,32 @@ const ARTIST_LINKS = {
 
 // 新しい順（mymusic順）。cover はファイル名キー。featured=ヒーロー強調。
 const SONGS = [
+  // --- 2026-09 バッチ（25曲・DistroKid 2026-09-25 送信・mood は仮）---
+  { key:"yokaze", title:"夜風のリズム", mood:"lo-fi soul / jazzy hip-hop" },
+  { key:"stackoverflow", title:"STACK OVERFLOW", mood:"electropop / bass" },
+  { key:"neuralcrown", title:"Neural Crown", mood:"boom bap / lyrical hip-hop" },
+  { key:"gakushu", title:"学習の果てに", mood:"emotional lo-fi / AI love song" },
+  { key:"benchkioku", title:"ベンチの記憶", mood:"lo-fi cinematic ballad" },
+  { key:"garasu", title:"ガラスの声", mood:"lo-fi ballad" },
+  { key:"saigonokoe", title:"最後の声", mood:"cinematic ballad" },
+  { key:"jihanki", title:"夜の自販機", mood:"late-night lo-fi / city pop" },
+  { key:"kousaten", title:"静かな交差点", mood:"lo-fi city pop / ambient" },
+  { key:"homekaze", title:"ホームの風", mood:"lo-fi city pop / ambient" },
+  { key:"toumei", title:"透明なラブレター", mood:"lo-fi indie pop" },
+  { key:"fuzai", title:"君の不在が鳴っている", mood:"emotional ballad / lo-fi pop" },
+  { key:"tegami", title:"声のない手紙", mood:"lo-fi city pop / ambient" },
+  { key:"logout", title:"電波のない空", mood:"lo-fi city pop / indie" },
+  { key:"shuden", title:"終電前のシーシャ", mood:"ambient indie pop" },
+  { key:"kehai", title:"気配の記憶", mood:"emotional lo-fi / city pop" },
+  { key:"katamimi", title:"片耳", mood:"funk-pop rock" },
+  { key:"seikatsukon", title:"生活痕", mood:"chill rap / lo-fi trap" },
+  { key:"yomei24", title:"余命24時間", mood:"chill rap / cinematic lo-fi" },
+  { key:"zankou", title:"残光", mood:"UK garage / alt-pop" },
+  { key:"kidoku", title:"既読洗濯物", mood:"hyperpop / dance-pop" },
+  { key:"hozonbutton", title:"保存ボタンのない毎日", mood:"cinematic band pop" },
+  { key:"hazure", title:"外れだった日", mood:"alt-pop ballad" },
+  { key:"nocrown", title:"No Crown, No Proof", mood:"dark trap / alt hip-hop" },
+  { key:"sainou", title:"才能の賞味期限", mood:"minimal rage / dark trap" },
   // --- 新リリース（2026-06 追加・mood は仮。要なら修正可）---
   { key:"alwaysback",    title:"I'm Always Back",     mood:"anthemic comeback / pop" },
   { key:"tsukaten",      title:"通過点",               mood:"reflective alt-pop" },
