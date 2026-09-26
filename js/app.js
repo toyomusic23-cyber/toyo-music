@@ -26,7 +26,7 @@
   /* ---------- music: featured (pinned big) + reorderable grid ---------- */
   const grid = $('#grid');
   const featuredEl = $('#featured');
-  const ORDER_KEY = 'toyo_grid_order';
+  const ORDER_KEY = 'toyo_grid_order_v2';   // 2026-09-26 並びを作り直したので、編集モードで各ブラウザに残った古い並びは使わない
   const platBtns = s => PLATS.map(p =>
     `<a class="pbtn ${p.k}" href="${s.links[p.k]}" target="_blank" rel="noopener"><span class="dot ${p.k}"></span>${p.label}</a>`).join('');
   const hasLyrics = s => typeof LYRICS !== 'undefined' && LYRICS[s.key];
@@ -190,11 +190,13 @@
     if (!SB_URL || !SB_KEY) return;
     let order;
     try {
-      const res = await fetch(`${SB_URL}/rest/v1/grid_order?id=eq.1&select=order_keys`,
+      const res = await fetch(`${SB_URL}/rest/v1/grid_order?id=eq.1&select=order_keys,updated_at`,
         { headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY } });
       if (!res.ok) return;
       const rows = await res.json();
       order = rows && rows[0] && rows[0].order_keys;
+      // songs.js の並び（ORDER_SET_AT）のほうが新しければ、古い公開順は使わない
+      if (typeof ORDER_SET_AT !== 'undefined' && rows[0] && rows[0].updated_at && new Date(rows[0].updated_at) < new Date(ORDER_SET_AT)) return;
     } catch (e) { return; }
     if (!Array.isArray(order) || !order.length) return;
     const rank = k => { const i = order.indexOf(k); return i === -1 ? 9999 : i; };
