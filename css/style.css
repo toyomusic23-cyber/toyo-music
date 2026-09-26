@@ -44,8 +44,8 @@ svg{width:1em;height:1em;fill:currentColor}
 
 /* ---------- BAR ---------- */
 .bar{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(11,11,12,.6),rgba(11,11,12,0));
-  padding:calc(12px + env(safe-area-inset-top)) var(--gut) 12px;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
-.bar.is-solid{background:var(--ink);border-bottom-color:var(--line)}
+  padding:calc(12px + env(safe-area-inset-top)) var(--gut) 12px;transition:background .3s,box-shadow .3s}
+.bar.is-solid{background:var(--ink);box-shadow:0 1px 0 var(--line)}
 .bar-logo{font-family:var(--serif);font-style:italic;font-size:28px;letter-spacing:-.02em;line-height:1;
   opacity:0;transition:opacity .3s}
 .bar.is-solid .bar-logo,[data-page="song"] .bar-logo,[data-page="doc"] .bar-logo,.bar-logo:focus-visible{opacity:1}
@@ -148,8 +148,9 @@ main{position:relative}
 .picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.4vw,32px)}
 .pick{position:relative;display:flex;flex-direction:column}
 .pick-open{text-align:left;display:block}
-.pick-art{position:relative;aspect-ratio:1/1;background:var(--ink-3);overflow:hidden}
-.pick-art img,.pick-art video{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.pick-art{position:relative;display:block;aspect-ratio:1/1;background:var(--ink-3);overflow:hidden}
+.pick-art img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.pick-art video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .pick-open:hover .pick-art img{transform:scale(1.03)}
 .pick-no{font-family:var(--serif);font-style:italic;font-size:46px;line-height:1;margin-top:14px;color:var(--accent)}
 .pick-title{font-weight:800;font-size:20px;line-height:1.35;margin-top:6px}
@@ -263,6 +264,7 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 .sheet-body{display:grid;gap:18px}
 .sheet-art{position:relative;aspect-ratio:1/1;background:var(--ink-3);max-width:420px;width:100%;overflow:hidden}
 .sheet-art img,.sheet-art video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sheet-art video,.song-art video{pointer-events:none}
 .sheet-title{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,38px);line-height:1.2}
 .sheet-meta{font-size:13px;color:var(--dim);margin-top:4px}
 .sheet-line{margin-top:12px;font-size:15px}
@@ -303,6 +305,7 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 /* ---------- EDIT（秘密URLのときだけ） ---------- */
 .editing .card{cursor:grab}
 .editing .card .play{display:none}
+.editing .chip-row,.editing .view-switch,.editing #scenes{display:none}
 .sortable-ghost{opacity:.3}
 .edit-bar[hidden]{display:none}
 .edit-bar{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(22px + var(--player-h));z-index:200;display:flex;align-items:center;gap:12px;
@@ -345,7 +348,7 @@ html.js .static-list{display:none}
 /* aspect-ratio 非対応（Safari 14 以前）でジャケの枠が高さ0にならないように */
 @supports not (aspect-ratio:1/1){
   .song-art,.sheet-art,.card-art,.pick-art,.rail-card .art{height:0;padding-top:100%}
-  .card-art img,.pick-art img,.rail-card img{position:absolute;inset:0}
+  .card-art img,.pick-art img,.pick-art video,.rail-card img{position:absolute;inset:0}
 }
 
 /* ---------- 画面に入ったらふわっと（対応ブラウザだけ・JS不要） ---------- */

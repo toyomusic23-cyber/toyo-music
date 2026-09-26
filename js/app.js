@@ -149,11 +149,16 @@
     audio.src = `${ROOT}audio/${s.key}.m4a`;
     renderPlayer(s); mediaSession(s); syncPlay();
   }
-  function startQueue(list, key, loc) {
+  function startQueue(list, key, loc, force) {
     const s = byKey.get(key); if (!s || !canPreview(s) || !audio) return;
-    if (cur === key) { audio.paused ? audio.play().catch(() => {}) : audio.pause(); return; }
-    queue = list.filter(canPreview).map(x => x.key);
+    const keys = list.filter(canPreview).map(x => x.key);
+    if (cur === key && !force) {                       // 同じ曲: 再生/一時停止の切り替え（押した一覧にキューだけ合わせる）
+      queue = keys; qi = queue.indexOf(key); if (qi < 0) { queue.unshift(key); qi = 0; }
+      audio.paused ? audio.play().catch(() => {}) : audio.pause(); return;
+    }
+    queue = keys;
     qi = queue.indexOf(key); if (qi < 0) { queue.unshift(key); qi = 0; }
+    if (cur === key) { audio.currentTime = 0; audio.play().catch(() => {}); lastAuto = false; fails = 0; dl({ event: 'preview_play', song_title: s.title, song_key: s.key, location: loc || '' }); return; }
     lastAuto = false; fails = 0;
     load(s); audio.play().catch(() => {});
     dl({ event: 'preview_play', song_title: s.title, song_key: s.key, location: loc || '' });
@@ -184,7 +189,7 @@
   if (audio) {
     audio.addEventListener('play', syncPlay);
     audio.addEventListener('pause', syncPlay);
-    audio.addEventListener('playing', () => { fails = 0; });
+    audio.addEventListener('playing', () => { fails = 0; const s = byKey.get(cur); if (s) setSub(`試聴 30秒 · ${moodOf(s)}`); });
     audio.addEventListener('ended', () => next(true));
     audio.addEventListener('error', () => {           // 試聴ファイルが読めない時は案内し、続けて試聴の途中なら次へ
       if (!cur) return;
@@ -200,7 +205,12 @@
     toggle && toggle.addEventListener('click', () => { if (!cur) return; audio.paused ? audio.play().catch(() => {}) : audio.pause(); });
     const nx = $('#playerNext'); nx && nx.addEventListener('click', () => next(false));
     const ps = $('#playerSong');
-    ps && ps.addEventListener('click', () => { if (!cur) return; PAGE === 'home' ? openSheet(cur) : (location.href = songHref(byKey.get(cur))); });
+    ps && ps.addEventListener('click', () => {
+      if (!cur) return;
+      if (PAGE === 'home') openSheet(cur);
+      else if (cur === body.dataset.key) scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });   // 同じ曲のページを読み直して試聴を止めない
+      else location.href = songHref(byKey.get(cur));
+    });
     if ('mediaSession' in navigator) {
       try {
         navigator.mediaSession.setActionHandler('play', () => audio.play());
@@ -243,11 +253,23 @@
 
   /* ---------- 曲の詳細シート（トップページ） ---------- */
   const sheet = $('#sheet'), sheetInner = $('#sheetInner');
-  let popGuard = false, lastFocus = null;
+  let popGuard = false, lastFocus = null, sheetPushed = false, downOnBackdrop = false;
   function motionCover(s, preload = 'metadata') {
     return MEDIA.covers && MEDIA.covers[s.key] && !reduce && !saveData && !motionOff
       ? `<video src="${ROOT}media/cover-${s.key}.mp4" muted playsinline loop autoplay preload="${preload}" poster="${ROOT}media/cover-${s.key}.webp" aria-hidden="true" tabindex="-1"></video>` : '';
   }
+  // 閉じた後の後片付け（履歴・URL・動画・フォーカス）。close イベントを待たずに、閉じたその場で1回だけ行う
+  let cleaned = true;
+  function afterClose() {
+    if (cleaned) return; cleaned = true;
+    $$('video', sheet).forEach(v => v.pause());
+    if (sheetPushed && history.state && history.state.sheet) { popGuard = true; history.back(); }
+    else if (location.hash.startsWith('#song=')) history.replaceState(null, '', location.pathname + location.search);
+    sheetPushed = false;
+    const back = lastFocus; lastFocus = null;   // 「戻る」の処理が済んでから、開く前の場所へフォーカスを戻す
+    if (back && document.contains(back)) setTimeout(() => back.focus({ preventScroll: true }), 60);
+  }
+  function closeSheet() { if (sheet && sheet.open) sheet.close(); afterClose(); }
   function openSheet(key, fromHash) {
     const s = byKey.get(key); if (!s) return;
     if (!sheet || typeof sheet.showModal !== 'function') { location.href = songHref(s); return; }
@@ -272,24 +294,21 @@
     wireImgs(sheetInner);
     syncPlay();
     if (!sheet.open) {
+      cleaned = false;
       lastFocus = document.activeElement;
       sheet.showModal();
-      if (fromHash) history.replaceState({ sheet: key }, '', '#song=' + key);
-      else history.pushState({ sheet: key }, '', '#song=' + key);   // アドレスバーの URL でもこの曲を共有できる
-    } else history.replaceState({ sheet: key }, '', '#song=' + key);
+      if (fromHash) { sheetPushed = false; history.replaceState(null, '', '#song=' + key); }   // 共有リンクから来た人: 閉じても前のサイトへ戻らない
+      else { sheetPushed = true; history.pushState({ sheet: key }, '', '#song=' + key); }   // アドレスバーの URL でもこの曲を共有できる
+    } else history.replaceState(sheetPushed ? { sheet: key } : null, '', '#song=' + key);
     sheetInner.scrollTop = 0; sheet.scrollTop = 0;
     dl({ event: 'song_view', song_title: s.title, song_key: s.key, location: 'sheet' });
   }
   if (sheet) {
-    sheet.addEventListener('click', e => { if (e.target === sheet) sheet.close(); });
-    sheet.addEventListener('close', () => {
-      $$('video', sheet).forEach(v => v.pause());
-      if (history.state && history.state.sheet) { popGuard = true; history.back(); }
-      else if (location.hash.startsWith('#song=')) history.replaceState(null, '', location.pathname + location.search);
-      const back = lastFocus; lastFocus = null;   // 「戻る」の処理が済んでから、開く前の場所へフォーカスを戻す
-      if (back && document.contains(back)) setTimeout(() => back.focus({ preventScroll: true }), 60);
-    });
-    addEventListener('popstate', () => { if (popGuard) { popGuard = false; return; } if (sheet.open) sheet.close(); });
+    // 外側（背景）を押して離した時だけ閉じる（文字を選んで外まで引っぱった時は閉じない）
+    sheet.addEventListener('pointerdown', e => { downOnBackdrop = e.target === sheet; });
+    sheet.addEventListener('click', e => { if (e.target === sheet && downOnBackdrop) closeSheet(); downOnBackdrop = false; });
+    sheet.addEventListener('close', afterClose);   // Esc キーで閉じた時もここで後片付け
+    addEventListener('popstate', () => { if (popGuard) { popGuard = false; return; } if (sheet.open) { sheetPushed = false; closeSheet(); } });
     sheet.addEventListener('toggle', e => {
       const d = e.target.closest && e.target.closest('details.lyrics');
       if (!d || !d.open) return;
@@ -326,7 +345,7 @@
     }
     const fb = t.closest('[data-follow]');
     if (fb) { dl({ event: 'follow_click', platform: fb.dataset.follow, location: fb.dataset.loc || 'follow' }); return; }
-    if (t.closest('[data-close]')) { sheet && sheet.close(); return; }
+    if (t.closest('[data-close]')) { closeSheet(); return; }
     const sh = t.closest('[data-share]');
     if (sh) { share(sh.dataset.share, sh); return; }
     if (PAGE !== 'home') return;
@@ -395,7 +414,9 @@
   const tick = () => {
     if (!clock) return;
     const d = new Date();
-    clock.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}  ${MOMENT.toUpperCase()}`;
+    const h = d.getHours(), live = h >= 5 && h < 10 ? 'morning' : h >= 10 && h < 16 ? 'day' : h >= 16 && h < 19 ? 'evening' : 'night';
+    const label = /[?&]moment=/.test(location.search) ? MOMENT : live;
+    clock.textContent = `${String(h).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}  ${label.toUpperCase()}`;
   };
   tick(); setInterval(tick, 20000);
 
@@ -534,12 +555,13 @@
   }
   renderChips(); renderCatalog();
   document.addEventListener('click', e => {
+    if (EDIT) return;                              // 並べ替え中は全曲表示のまま固定（絞り込んだ一部だけを公開しないように）
     const ch = e.target.closest('[data-chip]');
     if (ch) { setScene(ch.dataset.chip, false); return; }
     const vw = e.target.closest('.view-switch [data-view]');
     if (vw) { state.view = vw.dataset.view; store.set('toyo_view', state.view); renderCatalog(); return; }
     const pa = e.target.closest('[data-playall]');
-    if (pa) { const l = (lists.grid || []).filter(canPreview); if (l.length) startQueue(l, l[0].key, 'playall'); return; }
+    if (pa) { const l = (lists.grid || []).filter(canPreview); if (l.length) startQueue(l, l[0].key, 'playall', true); return; }
     const sc = e.target.closest('[data-scene]');
     if (sc) {
       setScene(sc.dataset.scene, true);
@@ -570,11 +592,14 @@
   let rebuildRail = null;
   if (rail && railTrack) {
     if (!newSongs().length) newSec && (newSec.hidden = true);
-    const railCard = (s, dup) => `<a class="rail-card" href="${songHref(s)}" data-open="${s.key}"${dup ? ' tabindex="-1" aria-hidden="true"' : ` aria-label="${esc(s.title)} の詳細"`}>
+    const railCard = (s, dup) => `<a class="rail-card" href="${songHref(s)}" data-open="${s.key}" draggable="false"${dup ? ' tabindex="-1" aria-hidden="true"' : ` aria-label="${esc(s.title)} の詳細"`}>
         <span class="art"><img data-src="${art(s, 640)}" data-srcset="${srcset(s)}" sizes="(max-width:760px) 150px, 210px" alt="" decoding="async" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='${artJpg(s)}'"><span class="badge">NEW</span></span>
         <span class="t">${esc(s.title)}</span><span class="m">${esc(moodOf(s))}</span></a>`;
     let half = 0, paused = reduce, hold = false, pos = 0, visible = false, rafOn = false, railActive = false, written = -1, touching = false, resume;
-    const measure = () => { half = railTrack.scrollWidth / 2; kick(); };
+    const measure = () => {                                     // 一周＝2周目の先頭カードの位置（余白・gap を含めて正確に）
+      const n = railTrack.children.length / 2, c = railTrack.children;
+      half = n && c[n] ? c[n].offsetLeft - c[0].offsetLeft : railTrack.scrollWidth / 2; kick();
+    };
     const lazyRail = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => {
       if (!en.isIntersecting) return; const im = en.target; lazyRail.unobserve(im);
       if (im.dataset.srcset) im.srcset = im.dataset.srcset; im.src = im.dataset.src; im.removeAttribute('data-src'); wireImgs(im.parentNode);
@@ -610,7 +635,7 @@
     railToggle && railToggle.addEventListener('click', () => setPaused(!paused));
     rail.addEventListener('mouseenter', () => (hold = true));
     rail.addEventListener('mouseleave', () => { hold = false; down = false; rail.classList.remove('dragging'); });
-    rail.addEventListener('focusin', () => (hold = true));
+    rail.addEventListener('focusin', e => { if (e.target.matches(':focus-visible')) hold = true; });
     rail.addEventListener('focusout', () => (hold = false));
     const release = () => { clearTimeout(resume); resume = setTimeout(() => { if (!touching) hold = false; }, 1800); };
     rail.addEventListener('touchstart', () => { touching = true; hold = true; clearTimeout(resume); }, { passive: true });
@@ -620,7 +645,9 @@
     rail.addEventListener('scroll', () => { if (rail.scrollLeft !== written) { pos = rail.scrollLeft; hold = true; release(); } }, { passive: true });
     rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; railMoved = false; sx = e.clientX; sl = rail.scrollLeft; rail.classList.add('dragging'); });
     addEventListener('pointermove', e => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 4) railMoved = true; rail.scrollLeft = sl - dx; });
-    addEventListener('pointerup', () => { down = false; rail.classList.remove('dragging'); setTimeout(() => (railMoved = false), 0); });
+    const up = () => { down = false; rail.classList.remove('dragging'); setTimeout(() => (railMoved = false), 0); };
+    addEventListener('pointerup', up); addEventListener('pointercancel', up);
+    rail.addEventListener('dragstart', e => e.preventDefault());
     if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => {
       visible = en.isIntersecting; if (visible && !railActive) activate(); if (visible) { pos = rail.scrollLeft; kick(); }
     }, { rootMargin: '600px 0px' }).observe(rail);
@@ -646,7 +673,8 @@
     if (!Array.isArray(keys) || !keys.length || !newerThanSongs(row.updated_at)) { store.del(PUB_KEY); return; }
     const same = pubCached && JSON.stringify(pubCached.keys) === JSON.stringify(keys);
     store.set(PUB_KEY, JSON.stringify({ keys, at: row.updated_at }));
-    if (same || EDIT) return;                     // 最初から同じ並びで描いている＝描き直さない（並びの入れ替わり・画像の点滅を防ぐ）
+    if (same) return;                             // 最初から同じ並びで描いている＝描き直さない（並びの入れ替わり・画像の点滅を防ぐ）
+    if (EDIT && store.get(ORDER_KEY)) return;     // 編集中の一時保存があればそれを優先
     sortBy(keys);
     renderCatalog(); rebuildRail && rebuildRail();
   })();
@@ -664,6 +692,7 @@
     });
     document.head.appendChild(sc);
     const keysNow = () => $$('.card', catalog).map(c => c.dataset.key).filter(k => k !== featured.key);
+    const fullOrder = () => { const k = keysNow(); return k.length === order.length ? k : null; };   // 全曲が並んでいる時だけ送る
     const copyBtn = $('#ebCopy'), resetBtn = $('#ebReset'), publishBtn = $('#ebPublish');
     copyBtn && copyBtn.addEventListener('click', async () => {
       const text = JSON.stringify(keysNow());
@@ -673,6 +702,7 @@
     });
     resetBtn && resetBtn.addEventListener('click', () => { store.del(ORDER_KEY); location.reload(); });
     publishBtn && publishBtn.addEventListener('click', async () => {
+      if (!fullOrder()) { alert('全曲が並んでいる状態で公開してください（絞り込みを外す）'); return; }
       const pass = prompt('全公開用の合言葉を入力（この順番が全員の画面に反映されます）:');
       if (!pass) return;
       publishBtn.disabled = true; publishBtn.textContent = '公開中…';
@@ -680,7 +710,7 @@
         const res = await fetch(`${SB_URL}/rest/v1/rpc/publish_order`, {
           method: 'POST',
           headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ p_order: keysNow(), p_pass: pass }),
+          body: JSON.stringify({ p_order: fullOrder(), p_pass: pass }),
         });
         if (res.ok) { publishBtn.textContent = '全公開しました ✓'; store.del(ORDER_KEY); }
         else {
