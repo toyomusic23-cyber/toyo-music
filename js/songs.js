@@ -19,7 +19,7 @@ const ARTIST_LINKS = {
 const ORDER_SET_AT = "2026-09-26T16:22:00+09:00";
 const SONGS = [
   // 並び順＝HP の一覧（Music）の表示順。2026-09-26 に「隣り合うジャケ（左右・上下）の色合い・明るさが似ない」ように計算で決めた
-  // （パソコン4列・タブレット3列・スマホ2列の全部で評価。scratchpad の color_order.py）。曲を足したら並びを計算し直す
+  // （パソコン4列・タブレット3列・スマホ2列の全部で評価。businesses/music-distro/scripts/hp_color_order.py）。曲を足したら並びを計算し直す
   { key:"tomaranai",     title:"止まらない箱",         mood:"energetic dance pop" },
   { key:"benchkioku", title:"ベンチの記憶", mood:"lo-fi cinematic ballad" },
   { key:"homekaze", title:"ホームの風", mood:"lo-fi city pop / ambient" },
