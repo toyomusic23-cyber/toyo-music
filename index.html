@@ -2,161 +2,199 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- Google Tag Manager（本番のホストだけで読む＝手元の確認を計測に入れない） -->
+<script>if(location.hostname==='toyomusic23-cyber.github.io')(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-52HK7VTJ');</script>
 <!-- End Google Tag Manager -->
-<title>Toyo — Official</title>
-<meta name="description" content="Toyo — その瞬間に合う音を、自由に。全曲を主要ストリーミングで配信中。" />
-<meta property="og:title" content="Toyo — Official" />
-<meta property="og:description" content="その瞬間に合う音を、自由に。Spotify / Apple Music / YouTube Music ほかで配信中。" />
-<meta property="og:type" content="music.musician" />
-<meta property="og:image" content="https://toyomusic23-cyber.github.io/toyo-music/covers/hero.jpg" />
-<meta name="theme-color" content="#070a14" />
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-<link rel="preload" as="image" href="covers/hero-1440.webp" />
+<title>Toyo（とよ）公式サイト｜試聴・配信・歌詞</title>
+<meta name="description" content="Toyo — その瞬間に合う音を、自由に。全曲をサイトで試聴して、Spotify / Apple Music / YouTube Music / Amazon Music で聴けます。" />
+<meta property="og:title" content="Toyo（とよ）公式サイト" />
+<meta property="og:description" content="その瞬間に合う音を、自由に。全曲をサイトで試聴して、好きなサービスで聴けます。" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Toyo" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:image" content="https://toyomusic23-cyber.github.io/toyo-music/og/default.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#0b0b0c" />
 <meta name="robots" content="index,follow" />
 <link rel="canonical" href="https://toyomusic23-cyber.github.io/toyo-music/" />
 <meta property="og:url" content="https://toyomusic23-cyber.github.io/toyo-music/" />
 <meta name="google-site-verification" content="wPuUVuIedWSj6dXTZIbvRYG-AYG_MsM630h8Z7IGaC0" />
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   "name": "Toyo",
   "url": "https://toyomusic23-cyber.github.io/toyo-music/",
-  "image": "https://toyomusic23-cyber.github.io/toyo-music/covers/hero.jpg",
-  "genre": ["J-Pop", "Alternative Pop", "Lo-fi"],
+  "image": "https://toyomusic23-cyber.github.io/toyo-music/og/default.jpg",
+  "genre": ["J-Pop", "Alternative Pop", "Lo-fi", "City Pop", "Hip-Hop"],
   "description": "Toyo（とよ）の公式音楽サイト。全曲を Spotify / Apple Music / YouTube Music / Amazon Music で配信中。",
   "sameAs": [
     "https://open.spotify.com/artist/14ufu3sDbRaXw7UFnVp6H3",
+    "https://music.apple.com/jp/artist/toyo/6779991937",
+    "https://music.youtube.com/channel/UC1kZ_lJTKYvof_bPutbfoWg",
     "https://www.instagram.com/toyomaru_king/"
   ]
 }
 </script>
-<link rel="stylesheet" href="css/style.css?v=12" />
+<!-- 訪問者の時刻（朝/昼/夕方/夜）を最初に決める。色とヒーロー映像がこれで変わる。同じタブで2回目の表示ならイントロを省く -->
+<script>
+(function(){var h=new Date().getHours(),m=h>=5&&h<10?'morning':h>=10&&h<16?'day':h>=16&&h<19?'evening':'night',d=document.documentElement,q=(location.search.match(/[?&]moment=(morning|day|evening|night)/)||[])[1];d.dataset.moment=q||m;
+try{if(sessionStorage.getItem('toyo_seen')){d.classList.add('revisit')}sessionStorage.setItem('toyo_seen','1')}catch(e){}
+var l=document.createElement('link');l.rel='preload';l.as='image';l.setAttribute('fetchpriority','high');l.href='media/hero-'+d.dataset.moment+'-'+(matchMedia('(max-aspect-ratio: 4/5)').matches?'port':'land')+'.webp';document.head.appendChild(l);})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500..900&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500..900&family=Instrument+Serif:ital@0;1&display=swap" /></noscript>
+<link rel="stylesheet" href="css/style.css?v=23" />
 </head>
-<body>
+<body data-page="home">
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-52HK7VTJ"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-  <!-- LOADER -->
-  <div id="loader" aria-hidden="true">
-    <div class="loader-name">Toyo</div>
-    <div class="loader-bar"><span></span></div>
-  </div>
+  <a class="skip" href="#start">本文へ移動</a>
 
-  <!-- GRAIN OVERLAY -->
-  <div class="grain" aria-hidden="true"></div>
-
-  <!-- HERO -->
-  <header class="hero" id="top">
-    <div class="hero-bg" aria-hidden="true">
-      <div class="hero-img-back" style="background-image:url('covers/hero-1440.webp')"></div>
-      <div class="hero-img" style="background-image:url('covers/hero-1440.webp')"></div>
-      <div class="hero-glow"></div>
-      <div class="hero-fx" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="hero-vignette"></div>
-    </div>
-    <nav class="nav">
-      <a class="nav-logo" href="#top">TOYO</a>
-      <div class="nav-links">
-        <a href="#music">Music</a>
-        <a href="#about">About</a>
-        <a class="nav-cta" id="navFollow" target="_blank" rel="noopener">Follow</a>
-      </div>
+  <header class="bar" id="bar">
+    <a class="bar-logo" href="#top" aria-label="Toyo トップへ">Toyo</a>
+    <nav class="bar-nav" aria-label="メイン">
+      <a href="#music">Music</a>
+      <a href="#about">About</a>
+      <a class="bar-follow" id="barFollow" href="https://open.spotify.com/artist/14ufu3sDbRaXw7UFnVp6H3" target="_blank" rel="noopener">Follow</a>
     </nav>
-    <div class="hero-inner">
-      <p class="hero-eyebrow">MUSIC FOR EVERY MOMENT</p>
-      <div class="title-mask"><h1 class="hero-title">Toyo</h1></div>
-      <p class="hero-tagline">その瞬間に合う音を、自由に。</p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" id="heroListen" target="_blank" rel="noopener">
-          <span class="btn-ic">▶</span> いま聴く
-        </a>
-        <a class="btn btn-ghost" id="heroFollow" target="_blank" rel="noopener">＋ フォロー</a>
-      </div>
-      <a class="scroll-cue" href="#music" aria-label="スクロール"><span></span></a>
-    </div>
   </header>
 
-  <!-- MUSIC -->
+  <section class="hero" id="top" aria-label="Toyo">
+    <div class="hero-media" id="heroMedia" aria-hidden="true">
+      <video id="heroVideo" muted playsinline loop preload="none" disablepictureinpicture></video>
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span><span class="eb-pre">MUSIC FOR </span>EVERY MOMENT</span><span class="hero-meta"><span class="hero-clock" id="heroClock"></span><button class="motion-toggle" id="heroMotion" type="button" aria-label="映像の動きを止める" aria-pressed="false" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M7 5h3v14H7zM14 5h3v14h-3z"/><path class="i-play" d="M8 5v14l11-7z"/></svg>
+        </button></span></div>
+      <div class="hero-grid">
+        <h1 class="wordmark" aria-label="Toyo"><span style="--i:0">T</span><span style="--i:1">o</span><span style="--i:2">y</span><span style="--i:3">o</span></h1>
+        <div class="hero-side">
+          <p class="hero-tagline">その瞬間に合う音を、自由に。</p>
+          <div class="now" id="now" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <main>
-    <section class="music" id="music">
-      <div class="section-head reveal">
-        <span class="section-kicker">DISCOGRAPHY</span>
-        <h2 class="section-title">Music</h2>
-        <p class="section-sub">全曲、主要ストリーミングで配信中。タップして各プラットフォームへ。</p>
+    <section class="sec" id="start" aria-labelledby="startTitle">
+      <div class="sec-head">
+        <p class="kicker">START HERE</p>
+        <h2 class="sec-title" id="startTitle">まずはこの3曲</h2>
       </div>
-      <!-- 動いている部分：自動スクロールのショーケース -->
-      <div class="rail-wrap">
-        <div class="rail-cap"><span class="dotpulse"></span>PICK UP</div>
-        <div class="rail" id="rail" aria-label="おすすめ"><div class="rail-track" id="railTrack"></div></div>
+      <div class="picks" id="picks"></div>
+    </section>
+
+    <section class="sec" id="scenes" aria-labelledby="scenesTitle">
+      <div class="sec-head">
+        <p class="kicker">SCENES</p>
+        <h2 class="sec-title" id="scenesTitle">シーンで選ぶ</h2>
+        <p class="sec-sub">いまの気分に近いものを選ぶと、その曲だけを続けて試聴できます。</p>
       </div>
+      <div class="scene-grid" id="sceneGrid"></div>
+    </section>
 
-      <!-- 境目 -->
-      <div class="coll-head reveal"><span class="coll-line"></span><span class="coll-label">ALL RELEASES</span><span class="coll-line"></span></div>
+    <section class="sec sec-new" id="new" aria-labelledby="newTitle">
+      <div class="sec-head sec-head-row">
+        <div>
+          <p class="kicker">NEW</p>
+          <h2 class="sec-title" id="newTitle">新曲 <span class="count" id="newCount"></span></h2>
+        </div>
+        <button class="icon-btn" id="railToggle" type="button" aria-label="新曲の帯の流れを止める" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M7 5h3v14H7zM14 5h3v14h-3z"/><path class="i-play" d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <div class="rail" id="rail" tabindex="0" role="region" aria-label="新曲の一覧（横にスクロールできます）"><div class="rail-track" id="railTrack"></div></div>
+    </section>
 
-      <!-- 固定部分：注目1曲＋コレクション -->
-      <div class="featured-slot" id="featured"></div>
-      <div class="grid" id="grid"><!-- songs injected by app.js --></div>
-
-      <!-- 並び替えツールバー（URLに ?edit があるときだけ表示） -->
+    <section class="sec" id="music" aria-labelledby="musicTitle">
+      <div class="sec-head sec-head-row">
+        <div>
+          <p class="kicker">ALL RELEASES</p>
+          <h2 class="sec-title" id="musicTitle">全曲 <span class="count" id="allCount"></span></h2>
+        </div>
+        <div class="view-switch" role="group" aria-label="表示の切り替え">
+          <button type="button" data-view="grid" aria-pressed="true">グリッド</button>
+          <button type="button" data-view="list" aria-pressed="false">リスト</button>
+        </div>
+      </div>
+      <div class="chip-row">
+        <button class="chip chip-play" type="button" data-playall><span aria-hidden="true">▶ </span>続けて試聴</button>
+        <div class="chips" id="chips" role="group" aria-label="シーンで絞り込む"></div>
+      </div>
+      <div class="catalog" id="catalog" data-view="grid"></div>
+      <!-- build:catalog --><ul class="static-list"><li><a href="song/tomaranai/">止まらない箱</a></li><li><a href="song/benchkioku/">ベンチの記憶</a></li><li><a href="song/homekaze/">ホームの風</a></li><li><a href="song/kidoku/">既読洗濯物</a></li><li><a href="song/reframing/">リフレーミング</a></li><li><a href="song/stackoverflow/">STACK OVERFLOW</a></li><li><a href="song/stillstanding/">Still Standing</a></li><li><a href="song/hozonbutton/">保存ボタンのない毎日</a></li><li><a href="song/origami/">折り紙</a></li><li><a href="song/saikessho/">再結晶</a></li><li><a href="song/yokaze/">夜風のリズム</a></li><li><a href="song/nedan/">値段をつけさせない</a></li><li><a href="song/erandekita/">選んできた私</a></li><li><a href="song/hazure/">外れだった日</a></li><li><a href="song/konbini/">深夜のコンビニ</a></li><li><a href="song/garasu/">ガラスの声</a></li><li><a href="song/kansokusha/">僕らは観測者</a></li><li><a href="song/alwaysback/">I&#39;m Always Back</a></li><li><a href="song/toumei/">透明なラブレター</a></li><li><a href="song/logout/">電波のない空</a></li><li><a href="song/uramu/">裏夢</a></li><li><a href="song/sainou/">才能の賞味期限</a></li><li><a href="song/fuzai/">君の不在が鳴っている</a></li><li><a href="song/dividedmind/">Divided Mind</a></li><li><a href="song/bluepride/">BLUE PRIDE</a></li><li><a href="song/shuden/">終電前のシーシャ</a></li><li><a href="song/ochikobore/">落ちこぼれの証明</a></li><li><a href="song/yomei24/">余命24時間</a></li><li><a href="song/kehai/">気配の記憶</a></li><li><a href="song/samenight/">Same Night</a></li><li><a href="song/negai/">願い</a></li><li><a href="song/jihanki/">夜の自販機</a></li><li><a href="song/makimodoshi/">巻き戻し</a></li><li><a href="song/hakushu/">拍手</a></li><li><a href="song/lowfriquency/">Low Friquency</a></li><li><a href="song/tegami/">声のない手紙</a></li><li><a href="song/neuralcrown/">Neural Crown</a></li><li><a href="song/honto/">本当に選んでるなら</a></li><li><a href="song/atokara/">あとから</a></li><li><a href="song/azatoi/">あざといんじゃない</a></li><li><a href="song/lostfound/">Lost &amp; Found</a></li><li><a href="song/seikatsukon/">生活痕</a></li><li><a href="song/rideonit/">Ride On It</a></li><li><a href="song/kousaten/">静かな交差点</a></li><li><a href="song/saigonokoe/">最後の声</a></li><li><a href="song/meitei/">酩酊</a></li><li><a href="song/signallost/">Signal Lost</a></li><li><a href="song/tsukaten/">通過点</a></li><li><a href="song/kaisatsu/">改札の音</a></li><li><a href="song/katamimi/">片耳</a></li><li><a href="song/yuragu/">ゆらぐ</a></li><li><a href="song/gakushu/">学習の果てに</a></li><li><a href="song/seikai/">正解の外</a></li><li><a href="song/nocrown/">No Crown, No Proof</a></li><li><a href="song/zankou/">残光</a></li><li><a href="song/karita/">借りた人生</a></li><li><a href="song/coinlaundry/">夜のコインランドリー</a></li></ul><!-- /build:catalog -->
       <div class="edit-bar" id="editBar" hidden>
         <span class="eb-msg">ドラッグで並び替え →「全公開する」で全員の画面に反映（合言葉が必要）</span>
-        <button class="eb-btn primary" id="ebPublish">全公開する</button>
-        <button class="eb-btn" id="ebCopy">順番をコピー</button>
-        <button class="eb-btn" id="ebReset">リセット</button>
+        <button class="eb-btn primary" id="ebPublish" type="button">全公開する</button>
+        <button class="eb-btn" id="ebCopy" type="button">順番をコピー</button>
+        <button class="eb-btn" id="ebReset" type="button">リセット</button>
       </div>
     </section>
 
-    <!-- FOLLOW BAND -->
-    <section class="follow" id="follow">
-      <div class="follow-inner reveal">
-        <h2 class="follow-title">Follow Toyo</h2>
-        <p class="follow-sub">フォロー＆プレイリスト追加で、次のリリースをいち早く。</p>
-        <div class="follow-btns" id="followBtns"></div>
-      </div>
+    <section class="sec follow" id="follow" aria-labelledby="followTitle">
+      <p class="kicker">FOLLOW</p>
+      <h2 class="follow-title" id="followTitle">新曲を、いちばん早く。</h2>
+      <p class="sec-sub">Spotify でフォローすると、新曲が「Release Radar」に自動で届きます。</p>
+      <div class="follow-btns" id="followBtns"><a class="svc svc-main" data-follow="spotify" data-loc="follow" href="https://open.spotify.com/artist/14ufu3sDbRaXw7UFnVp6H3" target="_blank" rel="noopener"><span class="dot spotify"></span>Spotify でフォロー</a><a class="svc" data-follow="apple" data-loc="follow" href="https://music.apple.com/jp/artist/toyo/6779991937" target="_blank" rel="noopener"><span class="dot apple"></span>Apple Music</a><a class="svc" data-follow="youtube" data-loc="follow" href="https://music.youtube.com/channel/UC1kZ_lJTKYvof_bPutbfoWg" target="_blank" rel="noopener"><span class="dot youtube"></span>YouTube Music</a><a class="svc" data-follow="instagram" data-loc="follow" href="https://www.instagram.com/toyomaru_king/" target="_blank" rel="noopener"><span class="dot instagram"></span>Instagram</a></div>
     </section>
 
-    <!-- ABOUT -->
-    <section class="about" id="about">
-      <div class="about-inner reveal">
-        <span class="section-kicker">ABOUT</span>
-        <p class="about-text">
-          <strong>Toyo</strong> の音楽は、ひとつのジャンルに収まらない。静かな夜に合う曲も、前を向きたい日に聴きたい曲も、ふとした感情から生まれる。<br><br>日常のいろんな瞬間に寄り添う、自由な音楽。
-        </p>
-      </div>
+    <section class="sec about" id="about" aria-labelledby="aboutTitle">
+      <p class="kicker">ABOUT</p>
+      <h2 class="visually-hidden" id="aboutTitle">About</h2>
+      <p class="about-text">
+        <strong>Toyo</strong> の音楽は、ひとつのジャンルに収まらない。静かな夜に合う曲も、前を向きたい日に聴きたい曲も、ふとした感情から生まれる。<br><br>日常のいろんな瞬間に寄り添う、自由な音楽。
+      </p>
+      <p class="about-note">楽曲とアートワークの制作には、Suno などの生成AIを使っています。</p>
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer-name">Toyo</div>
-    <div class="footer-social" id="footerSocial"></div>
-    <div class="footer-copy">© 2026 Toyo · All rights reserved</div>
+    <div class="footer-mark">Toyo</div>
+    <div class="footer-links" id="footerSocial"><a data-follow="instagram" data-loc="footer" href="https://www.instagram.com/toyomaru_king/" target="_blank" rel="noopener">Instagram</a><a data-follow="spotify" data-loc="footer" href="https://open.spotify.com/artist/14ufu3sDbRaXw7UFnVp6H3" target="_blank" rel="noopener">Spotify</a><a data-follow="apple" data-loc="footer" href="https://music.apple.com/jp/artist/toyo/6779991937" target="_blank" rel="noopener">Apple Music</a><a data-follow="youtube" data-loc="footer" href="https://music.youtube.com/channel/UC1kZ_lJTKYvof_bPutbfoWg" target="_blank" rel="noopener">YouTube Music</a></div>
+    <div class="footer-meta"><a href="privacy/">プライバシーポリシー</a><span>© 2026 Toyo</span></div>
   </footer>
 
-  <!-- 歌詞モーダル -->
-  <div class="lyric-modal" id="lyricModal" hidden>
-    <div class="lm-backdrop" data-close></div>
-    <div class="lm-panel" role="dialog" aria-modal="true">
-      <button class="lm-close" data-close aria-label="閉じる">✕</button>
-      <div class="lm-title" id="lmTitle"></div>
-      <pre class="lm-body" id="lmBody"></pre>
-    </div>
-  </div>
+  <!-- 曲の詳細（タップで開く） -->
+  <dialog class="sheet" id="sheet" aria-label="曲の詳細">
+    <div class="sheet-inner" id="sheetInner"></div>
+  </dialog>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-  <script src="js/songs.js?v=7"></script>
-  <script src="js/lyrics.js?v=13"></script>
-  <script src="js/app.js?v=14"></script>
+  <!-- 試聴プレイヤー（最初の再生で出る） -->
+  <div class="player" id="player" hidden>
+    <div class="player-progress" aria-hidden="true"><span id="playerBar"></span></div>
+    <button class="player-song" id="playerSong" type="button" aria-label="曲の詳細を開く">
+      <img id="playerArt" alt="" width="44" height="44" />
+      <span class="player-text"><span class="player-title" id="playerTitle"></span><span class="player-sub" id="playerSub">試聴 30秒</span></span>
+    </button>
+    <button class="player-btn" id="playerToggle" type="button" aria-label="一時停止">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M7 5h3v14H7zM14 5h3v14h-3z"/><path class="i-play" d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button class="player-btn" id="playerNext" type="button" aria-label="次の曲">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14l9-7zM16 5h3v14h-3z"/></svg>
+    </button>
+    <a class="player-svc" id="playerSvc" target="_blank" rel="noopener"></a>
+  </div>
+  <audio id="audio" preload="none"></audio>
+  <p class="visually-hidden" role="status" id="status"></p>
+
+  <script src="js/songs.js?v=23"></script>
+  <script src="js/app.js?v=23" defer></script>
 </body>
 </html>
