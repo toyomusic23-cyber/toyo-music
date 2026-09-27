@@ -8,6 +8,10 @@
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const html = document.documentElement;
+  // 指・マウスで操作している間はフォーカス枠を出さない（iPhone の Safari は、タップの後でもスクリプトで移したフォーカスに枠を出し、
+  // 詳細を開いた時の×や閉じた後のカードに青い四角が重なった・2026-09-27 Toyo 指摘）。Tab などキーボードを使ったら枠を戻す
+  addEventListener('pointerdown', () => html.classList.add('pointer'), true);
+  addEventListener('keydown', e => { if (!e.metaKey && !e.ctrlKey && !e.altKey) html.classList.remove('pointer'); }, true);
   const body = document.body;
   const PAGE = body.dataset.page || 'home';
   const ROOT = body.dataset.root || '';
