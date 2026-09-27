@@ -20,7 +20,10 @@
   const EDIT = new URLSearchParams(location.search).get('edit') === 'toyomaru-king';
   let motionOff = false;
   try { motionOff = localStorage.getItem('toyo_motion_off') === '1'; } catch (e) {}
-  const dl = o => (window.dataLayer = window.dataLayer || []).push(o);
+  // GTM のデータレイヤーは前の push の値を次のイベントへ持ち越す（試聴に直前のシーン、シーン選択に直前の曲が付いて GA4 に届いた・2026-09-27 本番の送信で確認）。
+  // 使わない項目は毎回 undefined で消してから送る
+  const DL_KEYS = ['song_title', 'song_key', 'platform', 'location', 'cta', 'scene', 'player'];
+  const dl = o => (window.dataLayer = window.dataLayer || []).push(Object.assign(Object.fromEntries(DL_KEYS.map(k => [k, undefined])), o));
   const store = {
     get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
