@@ -297,8 +297,11 @@
     ensureLyrics().then(ok => {
       if (!card.isConnected) return;
       if (ok && typeof LYRICS !== 'undefined' && LYRICS[s.key]) {
-        pre.textContent = LYRICS[s.key].trim();
-        more.hidden = pre.scrollHeight <= pre.clientHeight + 4;     // 短くて全部見えている時は「続きを読む」を出さない
+        // たたんだ時は「空行を飛ばした最初の4行」だけ（段落の長さは曲ごとに違い、高さで切ると空行が入って隙間になった）
+        card._full = LYRICS[s.key].trim();
+        card._preview = card._full.split('\n').filter(l => l.trim()).slice(0, 4).join('\n');
+        pre.textContent = card._preview;
+        more.hidden = card._preview === card._full;                 // 短くて全部見えている時は「続きを読む」を出さない
         card.classList.toggle('is-short', more.hidden);
       } else if (ok) { pre.textContent = '歌詞は準備中です。'; card.classList.add('is-short'); }
       else { pre.innerHTML = `歌詞を読み込めませんでした。<a class="text-link" href="${songHref(s)}">この曲のページで読む</a>`; card.classList.add('is-short'); }
@@ -307,6 +310,7 @@
   function toggleLyrics(btn) {
     const card = btn.closest('.lyric-card'); if (!card) return;
     const open = card.classList.toggle('is-open');
+    const pre = $('.lyric-body', card); if (pre && card._full) pre.textContent = open ? card._full : card._preview;
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     btn.textContent = open ? '閉じる ↑' : '続きを読む ↓';
     if (open) { const s = byKey.get(card.dataset.lyricCard); dl({ event: 'lyric_view', song_title: s ? s.title : '', song_key: card.dataset.lyricCard }); }
