@@ -221,6 +221,16 @@ main{position:relative}
 .card-text{display:block;cursor:pointer;padding-top:10px}
 .card-title{display:block;font-weight:700;font-size:15px;line-height:1.35}
 .card-mood{display:block;font-size:11.5px;color:var(--dim);margin-top:1px}
+/* 押すと詳細が開く合図（スマホは hover が無いので常に出す） */
+.card-more{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-top:3px}
+.card-text:hover .card-more{text-decoration:underline;text-underline-offset:3px}
+.card:has(.card-open:hover) .card-more{text-decoration:underline;text-underline-offset:3px}   /* :has を知らないブラウザで上の行まで消えないよう分ける */
+.open-mark{position:absolute;right:8px;top:8px;z-index:1;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(11,11,12,.55);color:var(--paper);border:1px solid rgba(241,238,232,.35);transition:background .2s,color .2s,border-color .2s}
+.open-mark svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.card-open:hover .open-mark,.pick-open:hover .open-mark,.rail-card:hover .open-mark{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pick-art .open-mark{right:10px;top:10px;width:30px;height:30px}
+.pick-art .open-mark svg{width:16px;height:16px}
 @media(max-width:599px){.card-title{font-size:13.5px}.card-art-wrap .play{width:36px;height:36px;right:6px;bottom:6px;font-size:13px}}
 html.imgfade .card-art img,html.imgfade .rail-card img,html.imgfade .pick-art img,html.imgfade .scene-covers img{opacity:0;transition:opacity .5s var(--ease),transform .6s var(--ease)}
 html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfade .pick-art img.loaded,html.imgfade .scene-covers img.loaded{opacity:1}
@@ -234,6 +244,8 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 .catalog[data-view="list"] .card-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .catalog[data-view="list"] .card-art-wrap .play{order:3;position:static}
 .catalog[data-view="list"] .badge{left:4px;top:4px;font-size:9px;padding:2px 4px}
+.catalog[data-view="list"] .open-mark{display:none}
+.catalog[data-view="list"] .card-more{margin-top:1px}
 
 /* FOLLOW / ABOUT */
 .follow{text-align:left}
@@ -304,7 +316,7 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 
 /* ---------- EDIT（秘密URLのときだけ） ---------- */
 .editing .card{cursor:grab}
-.editing .card .play{display:none}
+.editing .card .play,.editing .open-mark,.editing .card-more{display:none}
 .editing .chip-row,.editing .view-switch,.editing #scenes{display:none}
 .sortable-ghost{opacity:.3}
 .edit-bar[hidden]{display:none}
@@ -325,6 +337,9 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 .song-by{font-size:14px;color:var(--dim);margin-top:8px}
 .song-line{font-size:17px;margin-top:18px;line-height:1.8}
 .song-lyrics{margin-top:clamp(40px,6vw,72px);max-width:40em}
+.song-mv{margin-top:clamp(40px,6vw,72px);max-width:960px}
+.song-mv[hidden]{display:none}
+.song-mv h2{font-family:var(--display);font-size:13px;letter-spacing:.22em;color:var(--accent);font-weight:700;margin-bottom:16px}
 .song-lyrics h2{font-family:var(--display);font-size:13px;letter-spacing:.22em;color:var(--accent);font-weight:700}
 .song-lyrics pre{font-family:inherit;white-space:pre-wrap;font-size:16px;line-height:2.05;margin-top:16px;color:#dcd8d0}
 .related{margin-top:clamp(56px,8vw,96px)}
@@ -349,6 +364,7 @@ html.js .static-list{display:none}
 @supports not (aspect-ratio:1/1){
   .song-art,.sheet-art,.card-art,.pick-art,.rail-card .art{height:0;padding-top:100%}
   .card-art img,.pick-art img,.pick-art video,.rail-card img{position:absolute;inset:0}
+  .mv-frame{height:0;padding-top:56.25%}   /* MV は今は横長だけ（縦の MV を載せる時は要調整） */
 }
 
 /* ---------- 画面に入ったらふわっと（対応ブラウザだけ・JS不要） ---------- */
@@ -360,3 +376,36 @@ html.js .static-list{display:none}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .hero-media video{display:none}
 }
+
+/* ---------- MV（2026-09-26・ループは無音で自動／本編は押した時だけ音つき） ---------- */
+.mv-sec[hidden],.hero-mv-slot[hidden]{display:none}
+.mv-list{display:grid;gap:clamp(24px,3vw,40px)}
+.mv-item.is-lead{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);align-items:end}
+@media(max-width:860px){.mv-item.is-lead{grid-template-columns:1fr;gap:16px}}
+.mv-frame{position:relative;width:100%;background:var(--ink-3);overflow:hidden}
+.mv-frame .mv-poster,.mv-frame .mv-loop,.mv-frame .mv-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
+.mv-frame .mv-loop{pointer-events:none;opacity:0;transition:opacity .6s}
+.mv-frame .mv-loop.is-on{opacity:1}
+.mv-frame .mv-video{object-fit:contain;background:#000}
+.mv-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:12px;
+  padding:8px 20px 8px 8px;background:rgba(11,11,12,.62);color:var(--paper);border:1px solid rgba(241,238,232,.4);border-radius:999px;
+  font-weight:700;font-size:15px;white-space:nowrap;transition:background .2s}
+.mv-play:hover{background:rgba(11,11,12,.8)}
+.mv-play::before{content:"";position:absolute;inset:-100vmax}   /* 枠のどこを押しても再生（枠の overflow:hidden で切れる） */
+.mv-play-i,.hero-mv-i{flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink)}
+.mv-play-i{width:44px;height:44px;font-size:18px}
+.mv-play .i-play,.hero-mv .i-play{display:inline}.mv-play .i-pause,.hero-mv .i-pause{display:none}   /* 既定では .i-play が隠れている（41行目）ので出す */
+.mv-dur{margin-left:10px;font-weight:500;color:var(--dim);font-variant-numeric:tabular-nums}
+.mv-title{font-weight:800;font-size:clamp(22px,2.6vw,30px);line-height:1.3}
+.mv-kind{display:block;font-family:var(--display);font-size:12px;letter-spacing:.2em;color:var(--dim);font-weight:700;margin-top:6px;text-transform:uppercase}
+.mv-line{font-size:14px;color:#d9d5ce;margin-top:10px}
+.mv-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:16px}
+.hero-mv{display:inline-flex;align-items:center;gap:10px;margin-top:14px;padding:6px 16px 6px 6px;border:1px solid rgba(241,238,232,.45);border-radius:999px;
+  background:rgba(11,11,12,.5);color:var(--paper);font-size:14px;font-weight:700;text-align:left;line-height:1.3;transition:border-color .2s}
+.hero-mv:hover{border-color:var(--paper)}
+.hero-mv-i{width:34px;height:34px;font-size:14px}
+.hero-mv-k{display:block;font-family:var(--display);font-size:10px;letter-spacing:.18em;color:var(--accent);font-weight:800}
+html.js:not(.revisit) .hero-mv-slot{animation:fade .8s var(--ease) .6s both}
+.sheet-mv{margin-top:20px}
+.sheet-mv-label{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.22em;color:var(--accent);margin-bottom:10px}
+@media(max-width:420px){.mv-play{font-size:14px;gap:10px;padding:6px 16px 6px 6px}.mv-play-i{width:40px;height:40px}}

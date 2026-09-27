@@ -67,7 +67,7 @@ const SONGS = [
   { key:"saigonokoe", title:"最後の声", mood:"cinematic ballad" },
   { key:"meitei",        title:"酩酊",                 mood:"hazy lo-fi" },
   { key:"signallost",  title:"Signal Lost",        mood:"electronic alt" },
-  { key:"tsukaten",      title:"通過点",               mood:"reflective alt-pop" },
+  { key:"tsukaten",      title:"通過点",               mood:"dark minimal trap / swagger rap" },
   { key:"kaisatsu",    title:"改札の音",           mood:"minimal lo-fi / ambient" },
   { key:"katamimi", title:"片耳", mood:"funk-pop rock" },
   { key:"yuragu",      title:"ゆらぐ",             mood:"hypnotic groove pop" },
@@ -89,7 +89,8 @@ const SCENES = {
   night: { ja: "夜ひとりで", en: "LATE NIGHT" },
   feel: { ja: "感情に浸りたい", en: "FEELINGS" },
 };
-const MOTION = {"hero": {"morning": {"port": true}, "day": {"port": true}, "evening": {"port": true}, "night": {"port": true}}, "covers": {"tomaranai": true, "benchkioku": true, "homekaze": true, "kidoku": true, "reframing": true, "stillstanding": true, "hozonbutton": true, "origami": true, "saikessho": true, "yokaze": true, "nedan": true, "erandekita": true, "hazure": true, "konbini": true, "garasu": true, "kansokusha": true, "alwaysback": true, "toumei": true, "logout": true, "uramu": true, "sainou": true, "fuzai": true, "dividedmind": true, "bluepride": true, "shuden": true, "ochikobore": true, "yomei24": true, "kehai": true, "samenight": true, "negai": true, "jihanki": true, "makimodoshi": true, "hakushu": true, "lowfriquency": true, "tegami": true, "neuralcrown": true, "honto": true, "atokara": true, "azatoi": true, "lostfound": true, "seikatsukon": true, "rideonit": true, "kousaten": true, "saigonokoe": true, "meitei": true, "signallost": true, "tsukaten": true, "kaisatsu": true, "katamimi": true, "yuragu": true, "gakushu": true, "seikai": true, "nocrown": true, "zankou": true, "karita": true, "coinlaundry": true}};
+const MOTION = {"hero": {"morning": {"port": true}, "day": {"port": true}, "evening": {"port": true}, "night": {"port": true}}, "covers": {"benchkioku": true, "homekaze": true, "kidoku": true, "stillstanding": true, "origami": true, "yokaze": true, "kansokusha": true, "toumei": true, "logout": true, "uramu": true, "bluepride": true, "ochikobore": true, "samenight": true, "negai": true, "jihanki": true, "lowfriquency": true, "atokara": true, "rideonit": true, "signallost": true, "tsukaten": true, "gakushu": true, "nocrown": true}};
+const MV = {"coinlaundry": {"w": 1280, "h": 720, "sec": 166}};
 const SONG_META = {
   "tomaranai": {"scene": ["move"], "time": ["morning", "day"], "line": "行き先ボタンは押したのに、止まらない箱の中でどこへ向かうのかを見失っている。", "preview": true, "spotifyId": "30QHizNcpyqqmDPAryIoKu", "appleUrl": "https://music.apple.com/jp/album/%E6%AD%A2%E3%81%BE%E3%82%89%E3%81%AA%E3%81%84%E7%AE%B1/6781895815?i=6781895816", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_n5WPCoy_QPW6L57kdiAIY0RcpkMYz8TT8", "amazonUrl": "https://music.amazon.co.jp/albums/B0H5T1XCG2"},
   "benchkioku": {"scene": ["feel", "focus"], "time": ["day", "evening"], "line": "公園の古いベンチは、恋人たちの笑い声も老夫婦の夕焼けも全部見てきた。", "isNew": true, "preview": true, "spotifyId": "5t6WVhJtEBmDWmSRdsC1Q4", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_kMva8DasjgZQXJYoz5tG28MlpQ1FJz_UY", "amazonUrl": "https://music.amazon.co.jp/albums/B0HL2JN6SL"},

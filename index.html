@@ -55,7 +55,7 @@ var l=document.createElement('link');l.rel='preload';l.as='image';l.setAttribute
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500..900&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'" />
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500..900&family=Instrument+Serif:ital@0;1&display=swap" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=25" />
+<link rel="stylesheet" href="css/style.css?v=26" />
 </head>
 <body data-page="home">
   <!-- Google Tag Manager (noscript) -->
@@ -87,12 +87,20 @@ var l=document.createElement('link');l.rel='preload';l.as='image';l.setAttribute
         <div class="hero-side">
           <p class="hero-tagline">その瞬間に合う音を、自由に。</p>
           <div class="now" id="now" aria-live="polite"></div>
+          <div class="hero-mv-slot" id="heroMv" hidden></div>
         </div>
       </div>
     </div>
   </section>
 
   <main>
+    <section class="sec mv-sec" id="mv" aria-labelledby="mvSecTitle" hidden>
+      <div class="sec-head">
+        <p class="kicker">MUSIC VIDEO</p>
+        <h2 class="sec-title" id="mvSecTitle">ミュージックビデオ</h2>
+      </div>
+      <div class="mv-list" id="mvList"></div>
+    </section>
     <section class="sec" id="start" aria-labelledby="startTitle">
       <div class="sec-head">
         <p class="kicker">START HERE</p>
@@ -194,7 +202,7 @@ var l=document.createElement('link');l.rel='preload';l.as='image';l.setAttribute
   <audio id="audio" preload="none"></audio>
   <p class="visually-hidden" role="status" id="status"></p>
 
-  <script src="js/songs.js?v=25"></script>
-  <script src="js/app.js?v=25" defer></script>
+  <script src="js/songs.js?v=26"></script>
+  <script src="js/app.js?v=26" defer></script>
 </body>
 </html>

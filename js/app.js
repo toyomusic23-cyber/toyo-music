@@ -49,6 +49,7 @@
   const imgTag = (s, size, extra = '', sizes = '') =>
     `<img src="${art(s, size)}"${sizes ? ` srcset="${srcset(s)}" sizes="${sizes}"` : ''} alt="" loading="lazy" decoding="async" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='${artJpg(s)}'" ${extra}>`;
   const GRID_SIZES = '(max-width:599px) 46vw, (max-width:979px) 31vw, 290px';
+  const OPEN_MARK = '<span class="open-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></span>';   // ジャケを押すと詳細が開く印（Apple の商品カードの＋と同じ意味・曲ページ用に scripts/build_site.mjs にも同じ文字列）
   const ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5v14l11-7z"/><path class="i-pause" d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>';
 
   // 画像のフェードイン。JS が画像を見張っている時だけ隠す（html.imgfade）。3秒たっても読み終わらない画像は出す
@@ -79,6 +80,21 @@
     en.isIntersecting ? v.play().catch(() => {}) : v.pause();
   })) : null;
   const watchVideo = v => { if (v && vio) vio.observe(v); };
+  // MV のループは実際に動き出してから見せる（省電力モード等で自動再生が止められた時に、灰色の再生マークを出さない）
+  document.addEventListener('playing', e => { const v = e.target; if (v.classList && v.classList.contains('mv-loop')) v.classList.add('is-on'); }, true);
+
+  /* ---------- MV: ループは無音で自動（動きを止める設定では出さない）・本編は押した時だけ音つきで ---------- */
+  const MVS = typeof MV !== 'undefined' ? MV : {};
+  const mmss = sec => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+  const mvFrame = (s, loc) => {
+    const m = MVS[s.key]; if (!m) return '';
+    const loop = !reduce && !saveData && !motionOff;
+    return `<div class="mv-frame" data-mv="${s.key}" style="aspect-ratio:${m.w}/${m.h}">
+      <img class="mv-poster" src="${ROOT}media/mv-${s.key}.webp" alt="" decoding="async">
+      ${loop ? `<video class="mv-loop" src="${ROOT}media/mv-${s.key}-loop.mp4" muted playsinline loop autoplay preload="metadata" aria-hidden="true" tabindex="-1"></video>` : ''}
+      <button class="mv-play" type="button" data-mv-play="${s.key}" data-loc="${loc}" aria-label="MV を見る ${mmss(m.sec)}（${esc(s.title)}・音が出ます）"><span class="mv-play-i">${ICON_PLAY}</span><span class="mv-play-t">MV を見る<span class="mv-dur">${mmss(m.sec)}</span></span></button>
+    </div>`;
+  };
 
   /* ---------- 好きなサービスを覚える（1タップで聴けるように） ---------- */
   const PREF = 'toyo_pref_service';
@@ -107,6 +123,32 @@
   /* ---------- 試聴プレイヤー（30秒・必ず自分で押して開始） ---------- */
   const audio = $('#audio');
   const player = $('#player');
+  let lastMedia = null;                    // ロック画面の操作を向ける先（最後に鳴らした試聴 or MV）
+  // MV 本編: 枠の中をその場で再生用に差し替える（YouTube に上げた曲は YouTube の埋め込み・それ以外はサイトの動画）
+  // 鳴っている MV を全部止める（サイトの動画は pause・YouTube の埋め込みは API に一時停止を送る）。except= 止めない1本
+  const stopMv = except => $$('.mv-video').forEach(v => {
+    if (v === except) return;
+    if (v.tagName === 'VIDEO') v.pause();
+    else if (v.contentWindow) v.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', 'https://www.youtube-nocookie.com');
+  });
+  function playMv(key, btn, loc) {
+    const s = byKey.get(key), m = MVS[key]; if (!s || !m) return;
+    const fr = btn && btn.closest('.mv-frame') || $(`.mv-frame[data-mv="${key}"]`); if (!fr) return;
+    if (audio && !audio.paused) audio.pause();
+    const ex = $('.mv-video', fr);
+    if (ex) {                                   // もう開いている（ヒーローのボタンを2回押した等）: 作り直さず続きから
+      stopMv(ex);
+      if (ex.tagName === 'VIDEO') ex.play().catch(() => {});
+      ex.focus({ preventScroll: true }); return;
+    }
+    stopMv();
+    fr.innerHTML = m.yt
+      ? `<iframe class="mv-video" src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(m.yt)}?autoplay=1&rel=0&playsinline=1&enablejsapi=1" title="${esc(s.title)}（Music Video）" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`
+      : `<video class="mv-video" src="${ROOT}media/mv-${key}.mp4" poster="${ROOT}media/mv-${key}.webp" controls autoplay playsinline preload="auto" aria-label="${esc(s.title)}（Music Video）"></video>`;
+    fr.classList.add('is-playing');
+    const v = $('.mv-video', fr); if (v) { if (v.play) v.play().catch(() => {}); v.focus({ preventScroll: true }); }
+    dl({ event: 'mv_play', song_title: s.title, song_key: key, location: loc || (btn && btn.dataset.loc) || '', player: m.yt ? 'youtube' : 'site' });
+  }
   let queue = [], qi = -1, cur = null, lastAuto = false, fails = 0;
   const lists = {};                         // 場所ごとの曲順（「続けて試聴」の順番）
   const listFor = loc => (lists[loc] || lists.all || SONGS).filter(canPreview);
@@ -188,6 +230,11 @@
   }
   if (audio) {
     audio.addEventListener('play', syncPlay);
+    audio.addEventListener('play', () => { stopMv(); lastMedia = audio; });   // 試聴を始めたら MV は止める（音が重ならない）
+    document.addEventListener('play', e => {          // MV を動画の操作ボタンで再開した時も、試聴とほかの MV を止める（play は伝わらないので capture で拾う）
+      const v = e.target; if (!(v instanceof HTMLVideoElement) || !v.classList.contains('mv-video')) return;
+      if (!audio.paused) audio.pause(); stopMv(v); lastMedia = v;
+    }, true);
     audio.addEventListener('pause', syncPlay);
     audio.addEventListener('playing', () => { fails = 0; const s = byKey.get(cur); if (s) setSub(`試聴 30秒 · ${moodOf(s)}`); });
     audio.addEventListener('ended', () => next(true));
@@ -211,10 +258,11 @@
       else if (cur === body.dataset.key) scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });   // 同じ曲のページを読み直して試聴を止めない
       else location.href = songHref(byKey.get(cur));
     });
-    if ('mediaSession' in navigator) {
+    if ('mediaSession' in navigator) {                  // ロック画面・イヤホンの操作は、最後に鳴らした方（試聴 or MV）へ
+      const act = () => (lastMedia && lastMedia.isConnected ? lastMedia : audio);
       try {
-        navigator.mediaSession.setActionHandler('play', () => audio.play());
-        navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+        navigator.mediaSession.setActionHandler('play', () => { act().play().catch(() => {}); });
+        navigator.mediaSession.setActionHandler('pause', () => act().pause());
         navigator.mediaSession.setActionHandler('nexttrack', () => next(false));
       } catch (e) {}
     }
@@ -263,6 +311,7 @@
   function afterClose() {
     if (cleaned) return; cleaned = true;
     $$('video', sheet).forEach(v => v.pause());
+    $$('iframe.mv-video', sheet).forEach(f => f.remove());   // YouTube の埋め込みは外さないと鳴り続ける
     if (sheetPushed && history.state && history.state.sheet) { popGuard = true; history.back(); }
     else if (location.hash.startsWith('#song=')) history.replaceState(null, '', location.pathname + location.search);
     sheetPushed = false;
@@ -285,6 +334,7 @@
           ${s.line ? `<p class="sheet-line">${esc(s.line)}</p>` : ''}
           <div class="sheet-row">${playBtn(s, 'sheet')}${svcMain(s, 'sheet')}</div>
           <div class="sheet-others" data-others="${s.key}" data-loc="sheet">${svcOthers(s, 'sheet')}</div>
+          ${MVS[s.key] ? `<div class="sheet-mv"><p class="sheet-mv-label">MUSIC VIDEO</p>${mvFrame(s, 'sheet')}</div>` : ''}
           ${waiting(s) ? `<div class="sheet-row"><a class="svc" data-follow="spotify" data-loc="sheet" href="${ARTIST_LINKS.spotify}" target="_blank" rel="noopener"><span class="dot spotify"></span>Spotify でフォローして待つ</a></div>` : ''}
           <details class="lyrics" data-lyrics="${s.key}"><summary>歌詞</summary><pre>読み込み中…</pre></details>
           <div class="sheet-links"><a class="text-link" href="${songHref(s)}">この曲のページ</a><button class="text-link" type="button" data-share="${s.key}">共有する</button></div>
@@ -348,6 +398,13 @@
     if (t.closest('[data-close]')) { closeSheet(); return; }
     const sh = t.closest('[data-share]');
     if (sh) { share(sh.dataset.share, sh); return; }
+    const mp = t.closest('[data-mv-play]');
+    if (mp) { e.preventDefault(); playMv(mp.dataset.mvPlay, mp); return; }
+    const mg = t.closest('[data-mv-go]');               // ヒーローの「MV を見る」: その場で再生を始めてから MV の欄へ移る（音つき再生は押した瞬間でないと許されない）
+    if (mg) {
+      e.preventDefault(); playMv(mg.dataset.mvGo, $(`#mv [data-mv-play="${mg.dataset.mvGo}"]`), 'hero');
+      const sec = $('#mv'); sec && sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); return;
+    }
     if (PAGE !== 'home') return;
     const op = t.closest('[data-open]');
     if (!op) return;
@@ -383,6 +440,8 @@
       refreshSvc();
       const sa = $('.song-art');
       if (sa && !$('video', sa)) { sa.insertAdjacentHTML('beforeend', motionCover(s, 'auto')); watchVideo($('video', sa)); }
+      const sm = $('#songMv');
+      if (sm && MVS[s.key]) { sm.innerHTML = `<h2 id="mvTitle">MUSIC VIDEO</h2>${mvFrame(s, 'song_page')}`; sm.hidden = false; watchVideo($('.mv-loop', sm)); }
       dl({ event: 'song_view', song_title: s.title, song_key: s.key, location: 'song_page' });
     }
     wireImgs();
@@ -427,9 +486,9 @@
     motionOff = off;
     try { off ? localStorage.setItem('toyo_motion_off', '1') : localStorage.removeItem('toyo_motion_off'); } catch (e) {}
     if (heroMotion) heroMotion.setAttribute('aria-pressed', off ? 'true' : 'false');
-    $$('video').forEach(v => {
+    $$('video:not(.mv-video)').forEach(v => {
       if (off) { v.dataset.userPaused = '1'; v.pause(); }
-      else { delete v.dataset.userPaused; v.play().catch(() => {}); }
+      else { delete v.dataset.userPaused; if (vio) { vio.unobserve(v); vio.observe(v); } else v.play().catch(() => {}); }   // 画面外の動画まで再生しない
     });
     if (!off && heroVideo && hv && !heroVideo.src) startHero();
   };
@@ -489,7 +548,7 @@
     picksEl.innerHTML = picks.map((s, i) => `
       <article class="pick reveal" data-key="${s.key}">
         <a class="pick-open" href="${songHref(s)}" data-open="${s.key}" aria-label="${esc(s.title)} の詳細">
-          <span class="pick-art">${imgTag(s, 640, '', '(max-width:760px) 78vw, 400px')}${motionCover(s)}</span>
+          <span class="pick-art">${imgTag(s, 640, '', '(max-width:760px) 78vw, 400px')}${motionCover(s)}${OPEN_MARK}</span>
         </a>
         <div class="pick-no" aria-hidden="true">${String(i + 1).padStart(2, '0')}</div>
         <h3 class="pick-title"><a href="${songHref(s)}" data-open="${s.key}">${esc(s.title)}</a></h3>
@@ -502,6 +561,29 @@
   }
   renderPicks();
 
+  /* ---- MV（ヒーローのすぐ下の欄＋最初の画面の入口） ---- */
+  (function renderMv() {
+    const sec = $('#mv'), box = $('#mvList'), go = $('#heroMv');
+    const list = SONGS.filter(s => MVS[s.key]);
+    if (!sec || !box || !list.length) return;
+    box.innerHTML = list.map((s, i) => `
+      <article class="mv-item${i === 0 ? ' is-lead' : ''}">
+        ${mvFrame(s, 'mv_section')}
+        <div class="mv-meta">
+          <h3 class="mv-title">${esc(s.title)}<span class="mv-kind">Music Video</span></h3>
+          ${s.line ? `<p class="mv-line">${esc(s.line)}</p>` : ''}
+          <div class="mv-actions">${svcMain(s, 'mv_section')}<a class="text-link" href="${songHref(s)}" data-open="${s.key}">歌詞・詳細 ›</a></div>
+        </div>
+      </article>`).join('');
+    sec.hidden = false;
+    $$('.mv-loop', box).forEach(watchVideo);
+    if (go) {
+      const s = list[0];
+      go.innerHTML = `<button class="hero-mv" type="button" data-mv-go="${s.key}" aria-label="MUSIC VIDEO ${esc(s.title)}（音が出ます）"><span class="hero-mv-i">${ICON_PLAY}</span><span class="hero-mv-t"><span class="hero-mv-k">MUSIC VIDEO</span>${esc(s.title)}</span></button>`;
+      go.hidden = false;
+    }
+  })();
+
   /* ---- 全曲（グリッド/リスト・シーンで絞り込み） ---- */
   const catalog = $('#catalog'), chips = $('#chips');
   const state = { scene: 'all', view: store.get('toyo_view') === 'list' ? 'list' : 'grid' };
@@ -509,11 +591,11 @@
     <article class="card" data-key="${s.key}">
       <div class="card-art-wrap">
         <a class="card-open" href="${songHref(s)}" data-open="${s.key}" aria-label="${esc(s.title)} の詳細">
-          <span class="card-art">${lazyImg(s, state.view === 'list' ? '56px' : GRID_SIZES)}${s.isNew ? '<span class="badge">NEW</span>' : ''}</span>
+          <span class="card-art">${lazyImg(s, state.view === 'list' ? '56px' : GRID_SIZES)}${s.isNew ? '<span class="badge">NEW</span>' : ''}${OPEN_MARK}</span>
         </a>
         ${playBtn(s, loc)}
       </div>
-      <a class="card-text" href="${songHref(s)}" data-open="${s.key}" tabindex="-1"><span class="card-title">${esc(s.title)}</span><span class="card-mood">${esc(moodOf(s))}</span></a>
+      <a class="card-text" href="${songHref(s)}" data-open="${s.key}" tabindex="-1"><span class="card-title">${esc(s.title)}</span><span class="card-mood">${esc(moodOf(s))}</span><span class="card-more">歌詞・詳細<span aria-hidden="true"> ›</span></span></a>
     </article>`;
   const seen = new Set();
   const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => {
@@ -593,7 +675,7 @@
   if (rail && railTrack) {
     if (!newSongs().length) newSec && (newSec.hidden = true);
     const railCard = (s, dup) => `<a class="rail-card" href="${songHref(s)}" data-open="${s.key}" draggable="false"${dup ? ' tabindex="-1" aria-hidden="true"' : ` aria-label="${esc(s.title)} の詳細"`}>
-        <span class="art"><img data-src="${art(s, 640)}" data-srcset="${srcset(s)}" sizes="(max-width:760px) 150px, 210px" alt="" decoding="async" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='${artJpg(s)}'"><span class="badge">NEW</span></span>
+        <span class="art"><img data-src="${art(s, 640)}" data-srcset="${srcset(s)}" sizes="(max-width:760px) 150px, 210px" alt="" decoding="async" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='${artJpg(s)}'"><span class="badge">NEW</span>${OPEN_MARK}</span>
         <span class="t">${esc(s.title)}</span><span class="m">${esc(moodOf(s))}</span></a>`;
     let half = 0, paused = reduce, hold = false, pos = 0, visible = false, rafOn = false, railActive = false, written = -1, touching = false, resume;
     const measure = () => {                                     // 一周＝2周目の先頭カードの位置（余白・gap を含めて正確に）
