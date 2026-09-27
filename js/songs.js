@@ -90,7 +90,7 @@ const SCENES = {
   feel: { ja: "感情に浸りたい", en: "FEELINGS" },
 };
 const MOTION = {"hero": {"morning": {"port": true}, "day": {"port": true}, "evening": {"port": true}, "night": {"port": true}}, "covers": {"benchkioku": true, "homekaze": true, "kidoku": true, "stillstanding": true, "origami": true, "yokaze": true, "kansokusha": true, "toumei": true, "logout": true, "uramu": true, "bluepride": true, "ochikobore": true, "samenight": true, "negai": true, "jihanki": true, "lowfriquency": true, "atokara": true, "rideonit": true, "signallost": true, "tsukaten": true, "gakushu": true, "nocrown": true}};
-const MV = {"coinlaundry": {"w": 1280, "h": 720, "sec": 166}};
+const MV = {"coinlaundry": {"w": 1280, "h": 720, "sec": 166, "yt": "DkWJw1FKicA"}};
 const SONG_META = {
   "tomaranai": {"scene": ["move"], "time": ["morning", "day"], "line": "止まれない日々の途中で、答えの出ない感情だけが乗り続ける。", "preview": true, "spotifyId": "30QHizNcpyqqmDPAryIoKu", "appleUrl": "https://music.apple.com/jp/album/%E6%AD%A2%E3%81%BE%E3%82%89%E3%81%AA%E3%81%84%E7%AE%B1/6781895815?i=6781895816", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_n5WPCoy_QPW6L57kdiAIY0RcpkMYz8TT8", "amazonUrl": "https://music.amazon.co.jp/albums/B0H5T1XCG2"},
   "benchkioku": {"scene": ["feel", "focus"], "time": ["day", "evening"], "line": "公園の古いベンチは、恋人たちの笑い声も老夫婦の夕焼けも全部見てきた。", "isNew": true, "preview": true, "spotifyId": "5t6WVhJtEBmDWmSRdsC1Q4", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_kMva8DasjgZQXJYoz5tG28MlpQ1FJz_UY", "amazonUrl": "https://music.amazon.co.jp/albums/B0HL2JN6SL"},
