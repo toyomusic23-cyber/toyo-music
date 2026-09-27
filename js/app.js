@@ -521,7 +521,7 @@
     return fit.length ? fit : live.length ? live : allSongs().filter(canPreview);
   };
   const dayIndex = Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / 86400000);
-  let nowSkip = 0;
+  let nowSkip = 0, nowKey = '';
   // Toyo のおすすめ順位（rank・tracking/site/ranking.json）がある曲を先に順位順で出し、順位の無い曲は今までどおり日替わりで後ろに続ける。
   // 順位が1つも無ければ旧来の pool[(dayIndex + nowSkip) % n] と同じ結果になる（2026-09-27）
   const nowOrder = () => {
@@ -533,7 +533,7 @@
   function renderNow() {
     const el = $('#now'); if (!el) return;
     const pool = nowOrder(); if (!pool.length) { el.hidden = true; return; }
-    const s = pool[nowSkip % pool.length];
+    const s = pool[nowSkip % pool.length]; nowKey = s.key;
     lists.hero = [s, ...pool.filter(x => x !== s)];
     el.innerHTML = `
       <img class="now-art" src="${art(s, 240)}" alt="" width="64" height="64">
@@ -553,10 +553,32 @@
   });
 
   /* ---- まずはこの3曲 ---- */
+  // Toyo のおすすめ順位（rank）があれば、開くたびに「順位の高い曲ほど出やすい」重み付きで3曲を選び直す（2026-09-27 Toyo「コロコロ自動で変わる仕様がいい」）。
+  // すぐ上に出ている「いまの時間の1曲」と MV 欄の曲は外す。戻るボタンで戻った時だけ前回と同じ3曲にする（曲ページから戻ったら入れ替わっている、を防ぐ）
+  const PICKS_KEY = 'toyo_picks';
+  const choosePicks = () => {
+    const ranked = allSongs().filter(s => s.rank && canPreview(s) && !waiting(s)).sort((a, b) => a.rank - b.rank);
+    if (ranked.length < 3) return null;
+    const skip = new Set([nowKey, ...Object.keys(MVS)]);
+    let pool = ranked.filter(s => !skip.has(s.key)); if (pool.length < 3) pool = ranked;
+    const nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    if (nav && nav.type === 'back_forward') {
+      try { const got = (JSON.parse(sessionStorage.getItem(PICKS_KEY) || '[]') || []).map(k => pool.find(s => s.key === k)).filter(Boolean); if (got.length === 3) return got; } catch (e) {}
+    }
+    const out = [], left = pool.slice(), n = pool.length;
+    while (out.length < 3 && left.length) {
+      const w = left.map(s => (n + 1 - pool.indexOf(s)) ** 2); let r = Math.random() * w.reduce((a, b) => a + b, 0), i = 0;   // 重み＝(残り順位)²: 20曲なら 1位が約4割・10位が約1割・15位が4%ほど出る
+      while (i < w.length - 1 && (r -= w[i]) > 0) i++;
+      out.push(left.splice(i, 1)[0]);
+    }
+    out.sort((a, b) => a.rank - b.rank);
+    try { sessionStorage.setItem(PICKS_KEY, JSON.stringify(out.map(s => s.key))); } catch (e) {}
+    return out;
+  };
   const picksEl = $('#picks');
   function renderPicks() {
     if (!picksEl) return;
-    let picks = SONGS.filter(s => s.pick).sort((a, b) => a.pick - b.pick).slice(0, 3);
+    let picks = choosePicks() || SONGS.filter(s => s.pick).sort((a, b) => a.pick - b.pick).slice(0, 3);
     if (!picks.length) picks = [featured, ...order].slice(0, 3);
     lists.pick = picks;
     picksEl.innerHTML = picks.map((s, i) => `
