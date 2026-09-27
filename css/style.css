@@ -283,13 +283,24 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 .sheet-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px}
 .sheet-others{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .sheet-others .svc{min-height:38px;font-size:13px;padding:0 12px}
-.sheet-links{display:flex;flex-wrap:wrap;gap:18px;margin-top:20px}
-.lyrics{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
-.lyrics summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between}
-.lyrics summary::-webkit-details-marker{display:none}
-.lyrics summary::after{content:"＋";color:var(--dim)}
-.lyrics[open] summary::after{content:"－"}
-.lyrics pre{font-family:inherit;white-space:pre-wrap;font-size:15px;line-height:2;margin-top:14px;color:#dcd8d0}
+/* 歌詞カード（詳細画面・2026-09-27 D 案）: 冒頭の4行だけ見せて下を薄く消す。「続きを読む」で同じ場所に全文 */
+.lyric-card{margin-top:22px;background:var(--ink-3);padding:16px 16px 12px;border-radius:4px}
+.lyric-kicker{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--accent)}
+.lyric-body{font-family:inherit;white-space:pre-wrap;font-size:16px;line-height:1.95;margin-top:8px;color:#e6e2da;max-height:7.8em;overflow:hidden;
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.lyric-card.is-open .lyric-body,.lyric-card.is-short .lyric-body{max-height:none;-webkit-mask-image:none;mask-image:none}
+.lyric-more{font-size:13px;font-weight:700;margin-top:6px;min-height:40px;padding:0 2px}
+/* 共有（S1 案）: 同じ大きさのボタン2つ＋何が起きるかの一言 */
+.share{margin-top:24px}
+.share-h{font-size:12px;color:var(--dim);letter-spacing:.04em;margin-bottom:8px}
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.share-row.one{grid-template-columns:1fr}
+.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:1px solid var(--line-2);border-radius:3px;font-weight:700;font-size:14px;transition:border-color .2s}
+.share-btn:hover{border-color:var(--paper)}
+.ico-line{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.share-cap{font-size:11.5px;color:var(--dim);margin-top:6px}
+.page-link{display:block;width:max-content;margin:18px 0 0 auto;font-size:13px;font-weight:700;padding:8px 0}
+.page-link:hover{text-decoration:underline;text-underline-offset:3px}
 @media(min-width:760px){
   .sheet{margin:auto;max-width:880px;max-height:86vh;border:1px solid var(--line-2)}
   .sheet-inner{padding:22px 28px 30px}

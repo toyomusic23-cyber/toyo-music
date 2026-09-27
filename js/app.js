@@ -290,7 +290,43 @@
     return lyricsLoading;
   };
 
-  /* ---------- 共有 ---------- */
+  /* ---------- 歌詞カード（詳細画面・2026-09-27 Toyo 採用の D 案）: 冒頭だけ見せ、「続きを読む」で同じ場所に全文 ---------- */
+  function fillLyricCard(s) {
+    const card = $(`[data-lyric-card="${s.key}"]`, sheetInner); if (!card) return;
+    const pre = $('.lyric-body', card), more = $('[data-lyric-more]', card);
+    ensureLyrics().then(ok => {
+      if (!card.isConnected) return;
+      if (ok && typeof LYRICS !== 'undefined' && LYRICS[s.key]) {
+        pre.textContent = LYRICS[s.key].trim();
+        more.hidden = pre.scrollHeight <= pre.clientHeight + 4;     // 短くて全部見えている時は「続きを読む」を出さない
+        card.classList.toggle('is-short', more.hidden);
+      } else if (ok) { pre.textContent = '歌詞は準備中です。'; card.classList.add('is-short'); }
+      else { pre.innerHTML = `歌詞を読み込めませんでした。<a class="text-link" href="${songHref(s)}">この曲のページで読む</a>`; card.classList.add('is-short'); }
+    });
+  }
+  function toggleLyrics(btn) {
+    const card = btn.closest('.lyric-card'); if (!card) return;
+    const open = card.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.textContent = open ? '閉じる ↑' : '続きを読む ↓';
+    if (open) { const s = byKey.get(card.dataset.lyricCard); dl({ event: 'lyric_view', song_title: s ? s.title : '', song_key: card.dataset.lyricCard }); }
+    else card.scrollIntoView({ block: 'nearest' });
+  }
+
+  /* ---------- 共有（S1 案: 「共有する」＝スマホの共有画面／「リンクをコピー」を同じ大きさで並べる・2026-09-27） ---------- */
+  const CAN_SHARE = !!navigator.share;
+  const shareBlock = s => `<div class="share"><p class="share-h">この曲を誰かに送る</p>
+      <div class="share-row${CAN_SHARE ? '' : ' one'}">${CAN_SHARE ? `<button class="share-btn" type="button" data-share="${s.key}"><svg class="ico-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>共有する</button>` : ''}<button class="share-btn" type="button" data-copy-link="${s.key}"><svg class="ico-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>リンクをコピー</button></div>
+      ${CAN_SHARE ? '<p class="share-cap">「共有する」は LINE・X・Instagram などを選べます</p>' : ''}</div>`;
+  async function copyLink(key, btn) {
+    const s = byKey.get(key); if (!s) return;
+    const url = new URL(songHref(s), location.href).href;
+    const done = () => { const h = btn.innerHTML; btn.textContent = 'コピーしました ✓'; announce('リンクをコピーしました'); setTimeout(() => (btn.innerHTML = h), 1800); };
+    try { await navigator.clipboard.writeText(url); done(); }
+    catch (e) { prompt('このリンクをコピーしてください:', url); }
+  }
+  // 曲ページは前もって作った HTML に2つとも入っている＝共有画面を開けない端末（主にパソコン）では「共有する」と説明を外す
+  if (!CAN_SHARE) $$('.share').forEach(b => { $$('[data-share]', b).forEach(x => x.remove()); const r = $('.share-row', b); r && r.classList.add('one'); const c = $('.share-cap', b); c && c.remove(); });
   async function share(key, btn) {
     const s = byKey.get(key); if (!s) return;
     const url = new URL(songHref(s), location.href).href;
@@ -342,11 +378,13 @@
           <div class="sheet-others" data-others="${s.key}" data-loc="sheet">${svcOthers(s, 'sheet')}</div>
           ${MVS[s.key] ? `<div class="sheet-mv"><p class="sheet-mv-label">MUSIC VIDEO</p>${mvFrame(s, 'sheet')}</div>` : ''}
           ${waiting(s) ? `<div class="sheet-row"><a class="svc" data-follow="spotify" data-loc="sheet" href="${ARTIST_LINKS.spotify}" target="_blank" rel="noopener"><span class="dot spotify"></span>Spotify でフォローして待つ</a></div>` : ''}
-          <details class="lyrics" data-lyrics="${s.key}"><summary>歌詞</summary><pre>読み込み中…</pre></details>
-          <div class="sheet-links"><a class="text-link" href="${songHref(s)}">この曲のページ</a><button class="text-link" type="button" data-share="${s.key}">共有する</button></div>
+          <div class="lyric-card" data-lyric-card="${s.key}"><p class="lyric-kicker">LYRICS</p><pre class="lyric-body">読み込み中…</pre><button class="lyric-more" type="button" data-lyric-more aria-expanded="false" hidden>続きを読む ↓</button></div>
+          ${shareBlock(s)}
+          <a class="page-link" href="${songHref(s)}">この曲のページを開く ↗</a>
         </div>
       </div>`;
     sheet.setAttribute('aria-labelledby', 'sheetTitle');
+    fillLyricCard(s);
     wireImgs(sheetInner);
     syncPlay();
     if (!sheet.open) {
@@ -365,17 +403,6 @@
     sheet.addEventListener('click', e => { if (e.target === sheet && downOnBackdrop) closeSheet(); downOnBackdrop = false; });
     sheet.addEventListener('close', afterClose);   // Esc キーで閉じた時もここで後片付け
     addEventListener('popstate', () => { if (popGuard) { popGuard = false; return; } if (sheet.open) { sheetPushed = false; closeSheet(); } });
-    sheet.addEventListener('toggle', e => {
-      const d = e.target.closest && e.target.closest('details.lyrics');
-      if (!d || !d.open) return;
-      const k = d.dataset.lyrics, s = byKey.get(k), pre = $('pre', d);
-      ensureLyrics().then(ok => {
-        if (ok && typeof LYRICS !== 'undefined' && LYRICS[k]) pre.textContent = LYRICS[k];
-        else if (ok) pre.textContent = '歌詞は準備中です。';
-        else pre.innerHTML = `歌詞を読み込めませんでした。通信を確かめて、もう一度開いてください。<br><a class="text-link" href="${songHref(s)}">この曲のページで読む</a>`;
-      });
-      dl({ event: 'lyric_view', song_title: s ? s.title : '', song_key: k });
-    }, true);
   }
 
   /* ---------- クリックの受け口（まとめて1か所） ---------- */
@@ -404,6 +431,10 @@
     if (t.closest('[data-close]')) { closeSheet(); return; }
     const sh = t.closest('[data-share]');
     if (sh) { share(sh.dataset.share, sh); return; }
+    const cl = t.closest('[data-copy-link]');
+    if (cl) { copyLink(cl.dataset.copyLink, cl); return; }
+    const lm = t.closest('[data-lyric-more]');
+    if (lm) { toggleLyrics(lm); return; }
     const mp = t.closest('[data-mv-play]');
     if (mp) { e.preventDefault(); playMv(mp.dataset.mvPlay, mp); return; }
     const mg = t.closest('[data-mv-go]');               // ヒーローの「MV を見る」: その場で再生を始めてから MV の欄へ移る（音つき再生は押した瞬間でないと許されない）
