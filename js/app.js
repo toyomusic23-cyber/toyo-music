@@ -706,7 +706,7 @@
     // 整数の部分は scrollLeft、1px 未満の端数は帯の transform で足す。整数だけで動かすと 1コマごとに「1px 進む・止まる」が
     // 不規則に混ざり、揺れて見えた（2026-09-27 Toyo 指摘・120Hz の実測で 1,0,1,0,0…）。速さは時間で決める（旧: 1コマ 0.45px＝60Hz と 120Hz で倍違った）
     // 見えていて・止めていない時だけ毎フレーム動かす（それ以外はフレームの予約自体をしない）
-    const RAIL_SPEED = 40, setFrac = f => { railTrack.style.transform = f ? `translate3d(${-f.toFixed(3)}px,0,0)` : ''; };
+    const RAIL_SPEED = 30, setFrac = f => { railTrack.style.transform = f ? `translate3d(${-f.toFixed(3)}px,0,0)` : ''; };
     let last = 0;
     const railTick = t => {
       if (!(half && visible && !paused)) { rafOn = false; return; }
