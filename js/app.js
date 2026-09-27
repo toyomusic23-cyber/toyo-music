@@ -702,18 +702,23 @@
       railTrack.innerHTML = songs.map(s => railCard(s, false)).join('') + songs.map(s => railCard(s, true)).join('');
       measure(); if (railActive) activate();
     };
-    // iOS は scrollLeft を整数に丸めるので、小数の位置を別に持って整数で書く（2026-06-17 の修正を継承）
+    // iOS は scrollLeft を整数に丸めるので、小数の位置を別に持つ（2026-06-17 の修正を継承）。
+    // 整数の部分は scrollLeft、1px 未満の端数は帯の transform で足す。整数だけで動かすと 1コマごとに「1px 進む・止まる」が
+    // 不規則に混ざり、揺れて見えた（2026-09-27 Toyo 指摘・120Hz の実測で 1,0,1,0,0…）。速さは時間で決める（旧: 1コマ 0.45px＝60Hz と 120Hz で倍違った）
     // 見えていて・止めていない時だけ毎フレーム動かす（それ以外はフレームの予約自体をしない）
-    const railTick = () => {
+    const RAIL_SPEED = 40, setFrac = f => { railTrack.style.transform = f ? `translate3d(${-f.toFixed(3)}px,0,0)` : ''; };
+    let last = 0;
+    const railTick = t => {
       if (!(half && visible && !paused)) { rafOn = false; return; }
-      if (!hold && !down) { pos += 0.45; if (pos >= half) pos -= half; written = Math.round(pos); rail.scrollLeft = written; }
+      const dt = last ? Math.min(t - last, 50) : 0; last = t;
+      if (!hold && !down) { pos += RAIL_SPEED * dt / 1000; if (pos >= half) pos -= half; written = Math.floor(pos); rail.scrollLeft = written; setFrac(pos - written); }
       requestAnimationFrame(railTick);
     };
-    const kick = () => { if (!rafOn && half && visible && !paused) { rafOn = true; requestAnimationFrame(railTick); } };
+    const kick = () => { if (!rafOn && half && visible && !paused) { rafOn = true; last = 0; requestAnimationFrame(railTick); } };
     const setPaused = p => {
       paused = p;
       if (railToggle) railToggle.setAttribute('aria-pressed', p ? 'true' : 'false');
-      if (!p) { pos = rail.scrollLeft; kick(); }
+      if (!p) { pos = rail.scrollLeft; setFrac(0); kick(); }
     };
     let down = false, sx = 0, sl = 0;
     build(newSongs());
@@ -730,14 +735,14 @@
     rail.addEventListener('touchend', () => { touching = false; release(); }, { passive: true });
     rail.addEventListener('touchcancel', () => { touching = false; release(); }, { passive: true });
     rail.addEventListener('wheel', () => { hold = true; release(); }, { passive: true });
-    rail.addEventListener('scroll', () => { if (rail.scrollLeft !== written) { pos = rail.scrollLeft; hold = true; release(); } }, { passive: true });
+    rail.addEventListener('scroll', () => { if (rail.scrollLeft !== written) { pos = rail.scrollLeft; setFrac(0); hold = true; release(); } }, { passive: true });
     rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; railMoved = false; sx = e.clientX; sl = rail.scrollLeft; rail.classList.add('dragging'); });
     addEventListener('pointermove', e => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 4) railMoved = true; rail.scrollLeft = sl - dx; });
     const up = () => { down = false; rail.classList.remove('dragging'); setTimeout(() => (railMoved = false), 0); };
     addEventListener('pointerup', up); addEventListener('pointercancel', up);
     rail.addEventListener('dragstart', e => e.preventDefault());
     if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => {
-      visible = en.isIntersecting; if (visible && !railActive) activate(); if (visible) { pos = rail.scrollLeft; kick(); }
+      visible = en.isIntersecting; if (visible && !railActive) activate(); if (visible) { pos = rail.scrollLeft; setFrac(0); kick(); }
     }, { rootMargin: '600px 0px' }).observe(rail);
     else { visible = true; activate(); kick(); }
   }

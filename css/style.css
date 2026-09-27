@@ -184,7 +184,7 @@ main{position:relative}
   -webkit-overflow-scrolling:touch;outline-offset:-2px}
 .rail::-webkit-scrollbar{display:none}
 .rail.dragging{cursor:grabbing}
-.rail-track{display:flex;gap:14px;width:max-content;padding:6px var(--gut)}
+.rail-track{display:flex;gap:14px;width:max-content;padding:6px var(--gut);will-change:transform}
 .rail-card{flex:0 0 auto;display:block;width:clamp(150px,17vw,210px);text-align:left}
 .rail-card .art{display:block}
 .rail-card .t,.rail-card .m{display:block}
