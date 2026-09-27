@@ -522,10 +522,18 @@
   };
   const dayIndex = Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / 86400000);
   let nowSkip = 0;
+  // Toyo のおすすめ順位（rank・tracking/site/ranking.json）がある曲を先に順位順で出し、順位の無い曲は今までどおり日替わりで後ろに続ける。
+  // 順位が1つも無ければ旧来の pool[(dayIndex + nowSkip) % n] と同じ結果になる（2026-09-27）
+  const nowOrder = () => {
+    const pool = nowPool();
+    const ranked = pool.filter(s => s.rank).sort((x, y) => x.rank - y.rank);
+    const rest = pool.filter(s => !s.rank), d = rest.length ? dayIndex % rest.length : 0;
+    return [...ranked, ...rest.slice(d), ...rest.slice(0, d)];
+  };
   function renderNow() {
     const el = $('#now'); if (!el) return;
-    const pool = nowPool(); if (!pool.length) { el.hidden = true; return; }
-    const s = pool[(dayIndex + nowSkip) % pool.length];
+    const pool = nowOrder(); if (!pool.length) { el.hidden = true; return; }
+    const s = pool[nowSkip % pool.length];
     lists.hero = [s, ...pool.filter(x => x !== s)];
     el.innerHTML = `
       <img class="now-art" src="${art(s, 240)}" alt="" width="64" height="64">
