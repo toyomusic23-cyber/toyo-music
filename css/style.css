@@ -280,9 +280,22 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 .sheet-art video,.song-art video{pointer-events:none}
 .sheet-title{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,38px);line-height:1.2}
 .sheet-meta{font-size:13px;color:var(--dim);margin-top:4px}
-.sheet-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px}
-.sheet-others{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sheet-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px;max-width:520px}
+.sheet-others{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;max-width:520px}
 .sheet-others .svc{min-height:38px;font-size:13px;padding:0 12px}
+/* 並びをそろえる（2026-09-27 Toyo「バランスが気になる」）: 1段目は試聴の丸と Spotify を同じ高さにして右端まで、
+   2段目はほかの3つを同じ幅で1段に（Amazon だけ3段目に落ちて右端がバラバラだった） */
+.sheet-row .play{width:50px;height:50px;flex:0 0 50px}
+.sheet-row .svc-main{flex:1 1 auto;justify-content:center;min-height:50px}
+.sheet-others{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.sheet-others .svc{justify-content:center;min-height:44px;padding:0 4px 0 8px;font-size:11.5px;white-space:normal;text-align:center;line-height:1.25}
+@media (max-width:370px){.sheet-others .svc{font-size:11px}}   /* 実測: 11.5px で YouTube Music=94px・375幅のマス内（左の帯の余白込み）=97px／360幅は 11px で 90px に収める */
+.sheet-others .svc .dot{display:none}   /* 3等分の幅では点を付けると名前が2行に割れて点だけ左に離れた。点は1段目の大きいボタンだけ */
+/* 2段目の色は左の辺の帯で出す（2026-09-27 Toyo 選択・4案から）。Apple は YouTube の赤と見分けやすいようにピンク寄り */
+.sheet-others .svc:has(.dot.apple){box-shadow:inset 3px 0 0 #fb4d6d}
+.sheet-others .svc:has(.dot.youtube){box-shadow:inset 3px 0 0 #ff3b3b}
+.sheet-others .svc:has(.dot.amazon){box-shadow:inset 3px 0 0 #22b6c6}
+.sheet-others .svc:has(.dot.spotify){box-shadow:inset 3px 0 0 #1db954}
 /* 歌詞カード（詳細画面・2026-09-27 D 案）: 空行を飛ばした冒頭4行だけ見せて最後の行を薄く消す。「続きを読む」で同じ場所に全文 */
 .lyric-card{margin-top:22px;background:var(--ink-3);padding:16px 16px 12px;border-radius:4px}
 .lyric-kicker{font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.22em;color:var(--accent)}
