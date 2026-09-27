@@ -335,7 +335,6 @@
           ${s.isNew ? '<p class="kicker">NEW</p>' : ''}
           <h2 class="sheet-title" id="sheetTitle">${esc(s.title)}</h2>
           <p class="sheet-meta">${esc(moodOf(s))}${scenes.length ? ' · ' + esc(scenes.join(' / ')) : ''}</p>
-          ${s.line ? `<p class="sheet-line">${esc(s.line)}</p>` : ''}
           <div class="sheet-row">${playBtn(s, 'sheet')}${svcMain(s, 'sheet')}</div>
           <div class="sheet-others" data-others="${s.key}" data-loc="sheet">${svcOthers(s, 'sheet')}</div>
           ${MVS[s.key] ? `<div class="sheet-mv"><p class="sheet-mv-label">MUSIC VIDEO</p>${mvFrame(s, 'sheet')}</div>` : ''}
