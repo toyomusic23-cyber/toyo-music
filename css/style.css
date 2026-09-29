@@ -254,7 +254,6 @@ html.imgfade .card-art img.loaded,html.imgfade .rail-card img.loaded,html.imgfad
 .follow-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .about{padding-bottom:clamp(80px,12vw,140px)}
 .about-text{font-size:clamp(17px,2.1vw,22px);line-height:1.95;max-width:34em;margin-top:14px}
-.about-note{font-size:13px;color:var(--dim);margin-top:22px}
 
 /* FOOTER */
 .footer{border-top:1px solid var(--line);padding:40px var(--gut) calc(40px + env(safe-area-inset-bottom));max-width:var(--maxw);margin:0 auto}
