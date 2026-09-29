@@ -11,7 +11,7 @@ const ARTIST_LINKS = {
   apple:   "https://music.apple.com/jp/search?term=Toyo",
   youtube: "https://music.youtube.com/search?q=Toyo",
   amazon:  "https://music.amazon.co.jp/search/Toyo",
-  instagram: "https://www.instagram.com/toyomaru_king/"
+  instagram: "https://www.instagram.com/toyomusic.jp/"
 };
 
 // cover はファイル名キー。featured=ヒーロー強調（一覧には出ない）。
