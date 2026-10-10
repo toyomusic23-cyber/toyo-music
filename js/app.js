@@ -846,10 +846,10 @@
     sc.src = 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js';
     sc.onload = () => Sortable.create(catalog, {
       animation: 180, ghostClass: 'sortable-ghost', filter: '.card:last-child',
-      onEnd: () => store.set(ORDER_KEY, JSON.stringify($$('.card', catalog).map(c => c.dataset.key).filter(k => k !== featured.key))),
+      onEnd: () => store.set(ORDER_KEY, JSON.stringify($$('.card', catalog).map(c => c.dataset.key))),
     });
     document.head.appendChild(sc);
-    const keysNow = () => $$('.card', catalog).map(c => c.dataset.key).filter(k => k !== featured.key);
+    const keysNow = () => $$('.card', catalog).map(c => c.dataset.key);
     const fullOrder = () => { const k = keysNow(); return k.length === order.length ? k : null; };   // 全曲が並んでいる時だけ送る
     const copyBtn = $('#ebCopy'), resetBtn = $('#ebReset'), publishBtn = $('#ebPublish');
     copyBtn && copyBtn.addEventListener('click', async () => {
