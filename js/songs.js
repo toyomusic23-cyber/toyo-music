@@ -81,6 +81,11 @@ const SONGS = [
   { key:"atoniwa", title:"あと二話", mood:"city pop / chill rap", spotifyId:"0cvJDINL0iR8An57eddTXy" },
   { key:"irusu", title:"居留守", mood:"dark half-time trap", spotifyId:"4UIXHENpCp9XtLurv9s9K9" },
   { key:"enchoude", title:"延長で", mood:"deadpan boom bap / trap", spotifyId:"7sYTFPUmodQlnkewc4ZXWQ" },
+  { key:"aikodesho", title:"あいこでしょ", mood:"party hip-hop / call-and-response", spotifyId:"2SoGYNUDDZabvmSo1a2uhd" },
+  { key:"jukkome", title:"十個目", mood:"chill rap / alt R&B", spotifyId:"4HzoFP5pUp6Chk1lP95Qpo" },
+  { key:"hidarigawa", title:"左側", mood:"lo-fi R&B rap", spotifyId:"3IXLwGhGLBkFwS9BoyvpNM" },
+  { key:"okigasa", title:"置き傘", mood:"city pop / chill rap", spotifyId:"6LkHh0HFqDIkXYMGaqSu3q" },
+  { key:"hojowa", title:"補助輪", mood:"emotional alt hip-hop", spotifyId:"7CVHAbwHhivifzLbqdQTUZ" },
   { key:"coinlaundry", title:"夜のコインランドリー", mood:"minimal emotional pop",
     spotifyId:"25cGbl0VWBbzOahzYLoSVI", appleUrl:"https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AE%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%A9%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC/6775728890?i=6775728891", featured:true },
 ];
@@ -158,6 +163,11 @@ const SONG_META = {
   "atoniwa": {"preview": true},
   "irusu": {"preview": true},
   "enchoude": {"preview": true},
+  "aikodesho": {"preview": true},
+  "jukkome": {"preview": true},
+  "hidarigawa": {"preview": true},
+  "okigasa": {"preview": true},
+  "hojowa": {"preview": true},
   "coinlaundry": {"scene": ["night"], "time": ["night"], "line": "洗濯物と、まだ捨てられない気持ちが一緒に回る夜の歌", "pick": 1, "rank": 1, "preview": true, "spotifyId": "25cGbl0VWBbzOahzYLoSVI", "appleUrl": "https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AE%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%A9%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC/6775728890?i=6775728891", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_l974xpscjhoqdBgnzTNv935oqLUPxlWDo", "amazonUrl": "https://music.amazon.co.jp/albums/B0H3D1P1SK"}
 };
 Object.assign(ARTIST_LINKS, {"apple": "https://music.apple.com/jp/artist/toyo/6779991937", "youtube": "https://music.youtube.com/channel/UC1kZ_lJTKYvof_bPutbfoWg"});
