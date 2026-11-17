@@ -89,6 +89,7 @@ const SONGS = [
   { key:"michinari", title:"道なり", mood:"bittersweet city pop", spotifyId:"22hXC1EdVW7sMDbFoHTH61" },
   { key:"mikatadomari", title:"味方どまり", mood:"aching alt-rock ballad", spotifyId:"6qyaPFcNaB9doPyWyqI7cB" },
   { key:"mouichimai", title:"もう一枚", mood:"playful funk rap", spotifyId:"0snSGHUt2HTuuMe5PBnhKK" },
+  { key:"migikata", title:"右肩の雨", mood:"warm indie R&B", spotifyId:"1mokZwFWInshZbH7TH14Gr" },
   { key:"coinlaundry", title:"夜のコインランドリー", mood:"minimal emotional pop",
     spotifyId:"25cGbl0VWBbzOahzYLoSVI", appleUrl:"https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AE%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%A9%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC/6775728890?i=6775728891", featured:true },
 ];
@@ -174,6 +175,7 @@ const SONG_META = {
   "michinari": {"preview": true},
   "mikatadomari": {"preview": true},
   "mouichimai": {"preview": true},
+  "migikata": {"preview": true},
   "coinlaundry": {"scene": ["night"], "time": ["night"], "line": "洗濯物と、まだ捨てられない気持ちが一緒に回る夜の歌", "pick": 1, "rank": 1, "preview": true, "spotifyId": "25cGbl0VWBbzOahzYLoSVI", "appleUrl": "https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AE%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%A9%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC/6775728890?i=6775728891", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_l974xpscjhoqdBgnzTNv935oqLUPxlWDo", "amazonUrl": "https://music.amazon.co.jp/albums/B0H3D1P1SK"}
 };
 Object.assign(ARTIST_LINKS, {"apple": "https://music.apple.com/jp/artist/toyo/6779991937", "youtube": "https://music.youtube.com/channel/UC1kZ_lJTKYvof_bPutbfoWg"});
