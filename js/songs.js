@@ -100,6 +100,10 @@ const SONGS = [
   { key:"yujindaihyo", title:"友人代表", mood:"mellow neo-soul ballad", spotifyId:"7AoBDO1aAQZ1dq7v0SZJo8" },
   { key:"ichinenun", title:"一年ぶんのうん", mood:"chamber pop ballad", spotifyId:"6E29myhC8xeSCkENqs4wVh" },
   { key:"yametakuse", title:"辞めたくせに", mood:"jazzy piano pop", spotifyId:"51BxNMbiCYhzMGidSSekkC" },
+  { key:"mukatsuku", title:"むかつく", mood:"UK garage rap", spotifyId:"1CADDj4U1LzbrcFOTkSI5t" },
+  { key:"onajigaitai", title:"同じが痛い", mood:"retro chamber pop", spotifyId:"6ExrQ4Ex037xn7YlytiATj" },
+  { key:"kiribanashi", title:"切りばなし", mood:"piano soul ballad", spotifyId:"0ysw6MqENRRTIm3vZBw5eD" },
+  { key:"sukinakuse", title:"好きなくせに逃げる", mood:"pop-punk rap", spotifyId:"7grqCDqhSRwHYchWjh90UM" },
   { key:"coinlaundry", title:"夜のコインランドリー", mood:"minimal emotional pop",
     spotifyId:"25cGbl0VWBbzOahzYLoSVI", appleUrl:"https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AE%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%A9%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC/6775728890?i=6775728891", featured:true },
 ];
@@ -196,6 +200,10 @@ const SONG_META = {
   "yujindaihyo": {"preview": true},
   "ichinenun": {"preview": true},
   "yametakuse": {"preview": true},
+  "mukatsuku": {"preview": true},
+  "onajigaitai": {"preview": true},
+  "kiribanashi": {"preview": true},
+  "sukinakuse": {"preview": true},
   "coinlaundry": {"scene": ["night"], "time": ["night"], "line": "洗濯物と、まだ捨てられない気持ちが一緒に回る夜の歌", "pick": 1, "rank": 1, "preview": true, "spotifyId": "25cGbl0VWBbzOahzYLoSVI", "appleUrl": "https://music.apple.com/jp/album/%E5%A4%9C%E3%81%AE%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%A9%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC/6775728890?i=6775728891", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_l974xpscjhoqdBgnzTNv935oqLUPxlWDo", "amazonUrl": "https://music.amazon.co.jp/albums/B0H3D1P1SK"}
 };
 Object.assign(ARTIST_LINKS, {"apple": "https://music.apple.com/jp/artist/toyo/6779991937", "youtube": "https://music.youtube.com/channel/UC1kZ_lJTKYvof_bPutbfoWg"});
