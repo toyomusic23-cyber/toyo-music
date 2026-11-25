@@ -121,7 +121,7 @@ const SCENES = {
   feel: { ja: "感情に浸りたい", en: "FEELINGS" },
 };
 const MOTION = {"hero": {"morning": {"port": true}, "day": {"port": true}, "evening": {"port": true}, "night": {"port": true}}, "covers": {"benchkioku": true, "homekaze": true, "origami": true, "kansokusha": true, "rideonit": true, "stillstanding": true, "ochikobore": true, "samenight": true, "yokaze": true, "toumei": true, "kidoku": true, "logout": true, "uramu": true, "nocrown": true, "bluepride": true, "negai": true, "jihanki": true, "lowfriquency": true, "atokara": true, "tsukaten": true, "signallost": true, "gakushu": true}};
-const MV = {"coinlaundry": {"w": 1280, "h": 720, "sec": 166, "yt": "DkWJw1FKicA"}};
+const MV = {"seikatsukon": {"w": 1280, "h": 720, "sec": 246, "yt": "YWByC7lBDaQ"}, "coinlaundry": {"w": 1280, "h": 720, "sec": 166, "yt": "DkWJw1FKicA"}};
 const SONG_META = {
   "lostfound": {"scene": ["move", "night"], "time": ["night"], "line": "真夜中の街で君を探し歩いた末に、探していたのは昔の自分だったと気づく。", "rank": 4, "preview": true, "spotifyId": "1Yoq1abTYFvhBJ6zTQGKPk", "appleUrl": "https://music.apple.com/jp/album/lost-found/6780285565?i=6780285566", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_kXyGL9qp66ViEjIWxKldv-OBX67d0WCPE", "amazonUrl": "https://music.amazon.co.jp/albums/B0H59H7N25"},
   "seikatsukon": {"scene": ["feel", "focus"], "time": ["day", "evening"], "line": "写真も連絡先も消したのに、買い物かごの中身だけはまだ二人分になっている。", "isNew": true, "pick": 3, "rank": 3, "preview": true, "spotifyId": "1Gmmpnd4uT2F5wbRv7Hltt", "appleUrl": "https://music.apple.com/jp/album/%E7%94%9F%E6%B4%BB%E7%97%95/6816327159?i=6816327160", "youtubeUrl": "https://music.youtube.com/playlist?list=OLAK5uy_mKwAVVAdx-0xpaD3rHjY83ctYM_0tCEJw", "amazonUrl": "https://music.amazon.co.jp/albums/B0HL27JTQJ"},
